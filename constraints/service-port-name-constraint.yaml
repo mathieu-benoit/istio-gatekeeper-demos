@@ -12,7 +12,6 @@ spec:
       - Service
   parameters:
     prefixes:
-    - http-
-    - http2-
-    - grpc-
-    - tcp-
+    - http
+    - grpc
+    - tcp
