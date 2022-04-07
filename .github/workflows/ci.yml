@@ -16,4 +16,5 @@ jobs:
           ./kpt version
       - name: gatekeeper
         run: |
+          rm .github/workflows/ci.yml # gatekeeper complains about it otherwise
           ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
