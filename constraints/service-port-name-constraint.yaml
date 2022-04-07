@@ -1,0 +1,18 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedServicePortName
+metadata:
+  name: port-name-constraint
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Service
+  parameters:
+    prefixes:
+    - http-
+    - http2-
+    - grpc-
+    - tcp-
