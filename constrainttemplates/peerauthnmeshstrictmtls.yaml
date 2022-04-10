@@ -1,0 +1,37 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce the mesh level strict mtls PeerAuthentication.
+  name: peerauthnmeshstrictmtls
+spec:
+  crd:
+    spec:
+      names:
+        kind: PeerAuthnMeshStrictMtls
+      validation:
+        legacySchema: true
+        openAPIV3Schema:
+          properties:
+            rootNamespace:
+              description: Istio root namespace, default value is "istio-system" if not specified.
+              type: string
+  targets:
+  - rego: |-
+      package istio.security.peerauthentication
+      violation[{"msg": msg}] {
+        is_peer_authn_mesh_strict_mtls(input.review.kind)
+        # use input root namespace or default value istio-system
+        root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
+        not namespace_has_default_strict_mtls_pa(root_ns)
+        msg := sprintf("Root namespace <%v> does not have a strict mTLS PeerAuthentication", [root_ns])
+      }
+      namespace_has_default_strict_mtls_pa(ns) {
+        pa := data.inventory.namespace[ns][_].PeerAuthentication[_]
+        pa.spec.mtls.mode == "STRICT"
+      }
+      is_peer_authn_mesh_strict_mtls(kind) {
+        kind.kind == "PeerAuthnMeshStrictMtls"
+        kind.group == "constraints.gatekeeper.sh"
+      }
+    target: admission.k8s.gatekeeper.sh

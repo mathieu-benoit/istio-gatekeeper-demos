@@ -1,0 +1,6 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AuthzPolicyDefaultDeny
+metadata:
+  name: default-deny-authorization-policies
+spec:
+  enforcementAction: deny
