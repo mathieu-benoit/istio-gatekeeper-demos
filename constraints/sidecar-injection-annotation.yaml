@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: SidecarInjectionAnnotation
 metadata:
-  name: pod-sidecar-injection
+  name: sidecar-injection-annotation
 spec:
   enforcementAction: deny
   match:
@@ -10,5 +10,9 @@ spec:
       - apps
       kinds:
       - Deployment
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
     excludedNamespaces:
     - kube-system # to exclude istio-cni pods.

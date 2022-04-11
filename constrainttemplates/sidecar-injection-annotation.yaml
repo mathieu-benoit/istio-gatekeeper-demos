@@ -1,4 +1,4 @@
-apiVersion: templates.gatekeeper.sh/v1beta1
+apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   annotations:
@@ -18,6 +18,14 @@ spec:
       forbidden_injection_annotation := {"key": "sidecar.istio.io/inject", "value": "false"}
 
       violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          pod := input.review.object
+          pod.metadata.annotations[forbidden_injection_annotation["key"]] == forbidden_injection_annotation["value"]
+          msg := sprintf("The annotation %v: %v should not be applied on workload pods", [forbidden_injection_annotation["key"], forbidden_injection_annotation["value"]])
+      }
+
+      violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
           pod := input.review.object.spec.template
           pod.metadata.annotations[forbidden_injection_annotation["key"]] == forbidden_injection_annotation["value"]
           msg := sprintf("The annotation %v: %v should not be applied on workload pods", [forbidden_injection_annotation["key"], forbidden_injection_annotation["value"]])
