@@ -10,8 +10,8 @@ spec:
       names:
         kind: AllowedServicePortName
       validation:
-        legacySchema: true
         openAPIV3Schema:
+          type: object
           properties:
             prefixes:
               description: Prefixes of allowed service port names.

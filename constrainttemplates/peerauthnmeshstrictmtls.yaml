@@ -10,8 +10,8 @@ spec:
       names:
         kind: PeerAuthnMeshStrictMtls
       validation:
-        legacySchema: true
         openAPIV3Schema:
+          type: object
           properties:
             rootNamespace:
               description: Istio root namespace, default value is "istio-system" if not specified.

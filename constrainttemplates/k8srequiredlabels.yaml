@@ -10,8 +10,8 @@ spec:
       names:
         kind: K8sRequiredLabels
       validation:
-        legacySchema: true
         openAPIV3Schema:
+          type: object
           properties:
             labels:
               description: A list of labels and values the object must specify.

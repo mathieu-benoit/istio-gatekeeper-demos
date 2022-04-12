@@ -9,9 +9,6 @@ spec:
     spec:
       names:
         kind: PeerAuthnStrictMtls
-      validation:
-        legacySchema: true
-        openAPIV3Schema: {}
   targets:
   - rego: |-
       package istio.security.peerauthentication

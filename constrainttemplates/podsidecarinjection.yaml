@@ -9,9 +9,6 @@ spec:
     spec:
       names:
         kind: PodSidecarInjection
-      validation:
-        legacySchema: true
-        openAPIV3Schema: {}
   targets:
   - rego: |-
       package istio.security.workloadpolicy

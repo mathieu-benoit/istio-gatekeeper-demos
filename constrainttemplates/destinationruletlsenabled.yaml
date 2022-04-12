@@ -9,9 +9,6 @@ spec:
     spec:
       names:
         kind: DestinationRuleTLSEnabled
-      validation:
-        legacySchema: true
-        openAPIV3Schema: {}
   targets:
   - rego: |-
       package istio.guardrails.destinationruletlsenabled
