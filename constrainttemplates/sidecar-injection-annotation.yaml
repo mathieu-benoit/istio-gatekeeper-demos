@@ -1,0 +1,32 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce the istio proxy sidecar always been injected to workload.
+  name: sidecarinjectionannotation
+spec:
+  crd:
+    spec:
+      names:
+        kind: SidecarInjectionAnnotation
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package istio.security.workloadpolicy
+
+      # Annotation `sidecar.istio.io/inject: false` should not be applied on workload pods which will bypass istio proxy.
+      forbidden_injection_annotation := {"key": "sidecar.istio.io/inject", "value": "false"}
+
+      violation[{"msg": msg}] {
+          input.review.kind.kind == "Pod"
+          pod := input.review.object
+          pod.metadata.annotations[forbidden_injection_annotation["key"]] == forbidden_injection_annotation["value"]
+          msg := sprintf("The annotation %v: %v should not be applied on workload pods", [forbidden_injection_annotation["key"], forbidden_injection_annotation["value"]])
+      }
+
+      violation[{"msg": msg}] {
+          input.review.kind.kind == "Deployment"
+          pod := input.review.object.spec.template
+          pod.metadata.annotations[forbidden_injection_annotation["key"]] == forbidden_injection_annotation["value"]
+          msg := sprintf("The annotation %v: %v should not be applied on workload pods", [forbidden_injection_annotation["key"], forbidden_injection_annotation["value"]])
+      }
