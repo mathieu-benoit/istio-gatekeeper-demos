@@ -1,4 +1,4 @@
-apiVersion: templates.gatekeeper.sh/v1beta1
+apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
   annotations:
@@ -17,7 +17,6 @@ spec:
       package istio.security.workloadpolicy
       resource = input.review.object
       spec = resource.spec
-      # Annotation `sidecar.istio.io/inject: false` should not be applied on workload pods which will bypass istio proxy.
       forbidden_injection_annotation := {"key": "sidecar.istio.io/inject", "value": "false"}
       violation[{"msg": msg}] {
           is_pod(input.review.kind)
