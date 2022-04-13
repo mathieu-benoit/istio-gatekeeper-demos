@@ -5,16 +5,29 @@ on:
       - main
   pull_request:
 jobs:
-  build:
+  gator:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: install kpt	
+      - name: install gator
+        run: |
+          curl -OL https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz
+          tar xvf gator-v${GATOR_VERSION}-linux-amd64.tar.gz && rm gator-v${GATOR_VERSION}-linux-amd64.tar.gz
+        env:
+          GATOR_VERSION: 3.7.1
+      - name: gator test
+        run: ./gator test -v test/suite.yaml
+  kpt:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: install kpt
         run: |
           curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > ./kpt
           chmod +x ./kpt
           ./kpt version
       - name: gatekeeper
         run: |
+          rm -rf test
           rm .github/workflows/ci.yml # gatekeeper complains about it otherwise
           ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2

@@ -1,11 +1,15 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: PodSidecarInjection
+kind: SidecarInjectionAnnotation
 metadata:
-  name: pod-sidecar-injection
+  name: sidecar-injection-annotation
 spec:
   enforcementAction: deny
   match:
     kinds:
+    - apiGroups:
+      - apps
+      kinds:
+      - Deployment
     - apiGroups:
       - ""
       kinds:
