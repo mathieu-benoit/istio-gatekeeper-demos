@@ -17,8 +17,10 @@ spec:
               description: Istio root namespace, default value is "istio-system" if not specified.
               type: string
   targets:
-  - rego: |-
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
       package istio.security.authorizationpolicy
+
       violation[{"msg": msg}] {
         is_authz_policy_default_deny(input.review.kind)
         # use input root namespace or default value istio-system
@@ -26,19 +28,22 @@ spec:
         not namespace_has_default_deny_policy(root_ns)
         msg := sprintf("Root namespace <%v> does not have a default deny AuthorizationPolicy", [root_ns])
       }
+      
       is_authz_policy_default_deny(kind) {
         kind.kind == "AuthzPolicyDefaultDeny"
         kind.group == "constraints.gatekeeper.sh"
       }
+      
       namespace_has_default_deny_policy(ns) {
         ap := data.inventory.namespace[ns][_].AuthorizationPolicy[_]
         is_allow_action(ap)
         not ap.spec.rules
       }
+
       is_allow_action(ap) {
         ap.spec.action == "ALLOW"
       }
+
       is_allow_action(ap) {
         not ap.spec.action
       }
-    target: admission.k8s.gatekeeper.sh

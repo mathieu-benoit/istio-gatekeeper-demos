@@ -10,9 +10,10 @@ spec:
       names:
         kind: DestinationRuleTLSEnabled
   targets:
-  - rego: |-
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
       package istio.guardrails.destinationruletlsenabled
-      # spec.trafficPolicy.tls.mode == DISABLE
+
       violation[{"msg": msg}] {
         d := input.review.object
         startswith(d.apiVersion, "networking.istio.io/")
@@ -21,7 +22,7 @@ spec:
         tpl == {"mode": "DISABLE"}
         msg := sprintf("spec.trafficPolicy.tls.mode == DISABLE for host(s): %v", [d.spec.host])
       }
-      # spec.subsets[].trafficPolicy.tls.mode == DISABLE
+      
       violation[{"msg": msg}] {
         d := input.review.object
         startswith(d.apiVersion, "networking.istio.io/")
@@ -30,4 +31,3 @@ spec:
         subset.trafficPolicy == {"tls": {"mode": "DISABLE"}}
         msg := sprintf("subsets[].trafficPolicy.tls.mode == DISABLE for host-subset: %v-%v", [d.spec.host, subset.name])
       }
-    target: admission.k8s.gatekeeper.sh
