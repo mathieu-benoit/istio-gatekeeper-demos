@@ -3,4 +3,10 @@ kind: PeerAuthnMeshStrictMtls
 metadata:
   name: mesh-level-strict-mtls
 spec:
-  enforcementAction: deny
+  enforcementAction: dryrun
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Namespace

@@ -3,4 +3,10 @@ kind: AuthzPolicyDefaultDeny
 metadata:
   name: default-deny-authorization-policies
 spec:
-  enforcementAction: deny
+  enforcementAction: dryrun
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Namespace
