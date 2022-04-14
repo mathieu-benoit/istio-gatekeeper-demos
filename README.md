@@ -3,7 +3,7 @@
 ### Enforce ASM sidecar injection
 
 - `K8sRequiredLabels`
-- `PodSidecarInjection`
+- `SidecarInjectionAnnotation`
 
 ### Enforce STRICT mTLS in the Mesh
 
