@@ -23,6 +23,7 @@ spec:
 
       violation[{"msg": msg}] {
         root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
+        input.review.object.metadata.name == root_ns
         not namespace_has_default_strict_mtls_pa(root_ns)
         msg := sprintf("Root namespace <%v> does not have a strict mTLS PeerAuthentication", [root_ns])
       }
