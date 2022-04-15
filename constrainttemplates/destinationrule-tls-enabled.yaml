@@ -1,0 +1,33 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Prohibits disabling TLS for all hosts and host subsets in Istio DestinationRules.
+  name: destinationruletlsenabled
+spec:
+  crd:
+    spec:
+      names:
+        kind: DestinationRuleTLSEnabled
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.guardrails.destinationruletlsenabled
+
+      violation[{"msg": msg}] {
+        d := input.review.object
+        startswith(d.apiVersion, "networking.istio.io/")
+        d.kind == "DestinationRule"
+        tpl := d.spec.trafficPolicy[_]
+        tpl == {"mode": "DISABLE"}
+        msg := sprintf("spec.trafficPolicy.tls.mode == DISABLE for host(s): %v", [d.spec.host])
+      }
+
+      violation[{"msg": msg}] {
+        d := input.review.object
+        startswith(d.apiVersion, "networking.istio.io/")
+        d.kind == "DestinationRule"
+        subset := d.spec.subsets[_]
+        subset.trafficPolicy == {"tls": {"mode": "DISABLE"}}
+        msg := sprintf("subsets[].trafficPolicy.tls.mode == DISABLE for host-subset: %v-%v", [d.spec.host, subset.name])
+      }

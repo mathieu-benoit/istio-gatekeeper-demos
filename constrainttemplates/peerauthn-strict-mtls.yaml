@@ -1,0 +1,35 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce all PeerAuthentications cannot overwrite strict mtls.
+  name: peerauthnstrictmtls
+spec:
+  crd:
+    spec:
+      names:
+        kind: PeerAuthnStrictMtls
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.security.peerauthentication
+
+      spec = input.review.object.spec
+      valid_modes := {"UNSET", "STRICT"}
+
+      violation[{"msg": msg}] {
+          is_peerauthentication(input.review.kind)
+          count({spec.mtls.mode} - valid_modes) > 0
+          msg := "PeerAuthentication mtls mode can only be set to UNSET or STRICT"
+      }
+
+      violation[{"msg": msg}] {
+          is_peerauthentication(input.review.kind)
+          count({spec.portLevelMtls[port].mode} - valid_modes) > 0
+          msg := sprintf("PeerAuthentication port <%v> has invalid mtls mode <%v>, it can only be set to UNSET or STRICT", [port, spec.portLevelMtls[port].mode])
+      }
+
+      is_peerauthentication(kind) {
+          kind.kind == "PeerAuthentication"
+          kind.group == "security.istio.io"
+      }

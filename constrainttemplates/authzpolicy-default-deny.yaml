@@ -1,0 +1,43 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  annotations:
+    description: Enforce the mesh level strict mtls PeerAuthentication.
+  name: authzpolicydefaultdeny
+spec:
+  crd:
+    spec:
+      names:
+        kind: AuthzPolicyDefaultDeny
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            rootNamespace:
+              description: Istio root namespace, default value is "istio-system" if not specified.
+              type: string
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |-
+      package istio.security.authorizationpolicy
+
+      violation[{"msg": msg}] {
+        root_ns := object.get(object.get(input, "parameters", {}), "rootNamespace", "istio-system")
+        input.review.object.metadata.name == root_ns
+        not namespace_has_default_deny_policy(root_ns)
+        msg := sprintf("Root namespace <%v> does not have a default deny AuthorizationPolicy", [root_ns])
+      }
+
+      namespace_has_default_deny_policy(ns) {
+        ap := data.inventory.namespace[ns][_].AuthorizationPolicy[_]
+        is_allow_action(ap)
+        not ap.spec.rules
+      }
+
+      is_allow_action(ap) {
+        ap.spec.action == "ALLOW"
+      }
+
+      is_allow_action(ap) {
+        not ap.spec.action
+      }

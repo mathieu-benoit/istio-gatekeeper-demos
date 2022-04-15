@@ -1,31 +1,20 @@
-# istio-gatekeeper-demos
-
-## Create cluster
-
-### AKS
-
-### GKE
-
-## Install Istio
-
-### AKS
-
-### GKE
-
-## Deploy Ingress Gateway
-
-## Install Gatekeeper
-
-### AKS
-
-### GKE
-
-## Deploy sample app
-
 ## Demos
 
 ### Enforce ASM sidecar injection
 
+- `K8sRequiredLabels`
+- `SidecarInjectionAnnotation`
+
 ### Enforce STRICT mTLS in the Mesh
 
+- `PeerAuthnMeshStrictMtls`
+- `PeerAuthnStrictMtls`
+- `DestinationRuleTLSEnabled`
+
 ### Enforce AuthorizationPolicies
+
+- `AuthzPolicyDefaultDeny`
+
+### Enforce Service port name
+
+- `AllowedServicePortName`

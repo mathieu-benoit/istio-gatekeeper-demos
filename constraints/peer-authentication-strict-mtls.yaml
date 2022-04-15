@@ -1,0 +1,12 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PeerAuthnStrictMtls
+metadata:
+  name: peer-authentication-strict-mtls
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+    - apiGroups:
+      - security.istio.io
+      kinds:
+      - PeerAuthentication
