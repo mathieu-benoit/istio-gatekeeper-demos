@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: onlineboutique
   labels:
-    #istio.io/rev: asm-managed
+    istio-injection: enabled

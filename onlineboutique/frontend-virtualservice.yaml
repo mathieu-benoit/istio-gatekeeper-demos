@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  hosts:
+    - "*"
+  gateways:
+  - istio-ingress/istio-ingressgateway
+  http:
+  - route:
+    - destination:
+        host: frontend
+        port:
+          number: 80
