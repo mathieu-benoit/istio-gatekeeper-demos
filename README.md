@@ -50,11 +50,13 @@ kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.l
 - `K8sRequiredLabels`
 - `SidecarInjectionAnnotation`
 
+Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
 kubectl apply -f constrainttemplates/sidecar-injection
 kubectl apply -f constraints/sidecar-injection
 ```
 
+Verify that the two `constrainttemplates` has been deployed successfully:
 ```bash
 kubectl get constrainttemplates
 ```
@@ -66,6 +68,7 @@ k8srequiredlabels            47s
 sidecarinjectionannotation   47s
 ```
 
+Verify that the two `constraints` has been deployed successfully:
 ```bash
 kubectl get constraints
 ```
@@ -73,26 +76,20 @@ kubectl get constraints
 Output similar to:
 ```output
 NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 2
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
 
 NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 2
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
 ```
 
-```bash
-kubectl get sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation -ojsonpath='{.status.violations}' | jq
-```
-
-```bash
-kubectl get k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label -ojsonpath='{.status.violations}' | jq
-```
-
+Try to create a `test` namespace without the required `label`:
 ```bash
 kubectl create namespace test
 ```
 
+Output similar to:
 ```output
-Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: [namespace-sidecar-injection-label] you must provide labels: {"istio.io/rev"}
+Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: [namespace-sidecar-injection-label] you must provide labels: {"istio-injection"}
 ```
 
 ### Enforce STRICT mTLS in the Mesh
