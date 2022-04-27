@@ -3,4 +3,4 @@ kind: Namespace
 metadata:
   name: istio-ingress
   labels:
-    istio.io/rev: asm-managed
+    istio-injection: enabled
