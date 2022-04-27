@@ -100,7 +100,99 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 - `PeerAuthnStrictMtls`
 - `DestinationRuleTLSEnabled`
 
-FIXME
+Let's extend the default Gatekeeper config in order to take into account Istio resources:
+```bash
+kubectl -n gatekeeper-system apply -f ${WORKDIR}/gatekeeper-system/config-referential-constraints.yaml
+```
+
+Let's deploy these two `constraints` and `constrainttemplates`:
+```bash
+kubectl apply -f constrainttemplates/strict-mtls
+kubectl apply -f constraints/strict-mtls
+```
+
+Verify that the two `constrainttemplates` has been deployed successfully:
+```bash
+kubectl get constrainttemplates
+```
+
+Output similar to:
+```output
+NAME                         AGE
+destinationruletlsenabled    18s
+k8srequiredlabels            56m
+peerauthnmeshstrictmtls      17s
+peerauthnstrictmtls          17s
+sidecarinjectionannotation   56m
+```
+
+Verify that the two `constraints` has been deployed successfully:
+```bash
+kubectl get constraints
+```
+
+Output similar to:
+```output
+NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               1
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
+
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
+```
+
+We could see after a few minutes that Gatekeeper will raise violations for the `AsmPeerAuthnMeshStrictMtls` `Constraint`:
+```bash
+kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls -ojsonpath='{.status.violations}' | jq
+```
+
+The output is similar to:
+```output
+[
+  {
+    "enforcementAction": "dryrun",
+    "kind": "Namespace",
+    "message": "Root namespace <istio-system> does not have a strict mTLS PeerAuthentication",
+    "name": "istio-system"
+  }
+]
+```
+
+We could fix this violation by deploying the default `STRICT` mTLS `PeerAuthentication` in the `istio-system` namespace:
+```bash
+kubectl -n istio-system apply -f istio-system/default-strict-peerauthentication.yaml
+```
+
+After a few minutes, verify that the `Constraints` don't have any remaining violations:
+```bash
+kubectl get constraints
+```
+
+The output is similar to:
+```output
+NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
+
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
+```
 
 ### Enforce `AuthorizationPolicies`
 
