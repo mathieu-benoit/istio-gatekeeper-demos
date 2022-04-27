@@ -47,7 +47,7 @@ _Note: you may need to re-run this command above couple of times in order to get
 
 ## Demos
 
-### Enforce ASM sidecar injection
+### Enforce Istio sidecar injection
 
 - `K8sRequiredLabels`
 - `SidecarInjectionAnnotation`
@@ -94,7 +94,7 @@ Output similar to:
 Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: [namespace-sidecar-injection-label] you must provide labels: {"istio-injection"}
 ```
 
-### Enforce STRICT mTLS in the Mesh
+### Enforce `STRICT` mTLS in the Mesh
 
 - `PeerAuthnMeshStrictMtls`
 - `PeerAuthnStrictMtls`
@@ -102,13 +102,13 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 
 FIXME
 
-### Enforce AuthorizationPolicies
+### Enforce `AuthorizationPolicies`
 
 - `AuthzPolicyDefaultDeny`
 
 FIXME
 
-### Shifting left the detection of the Constraints violations
+### Shifting left the detection of the `Constraints` violations
 
 Install `kpt`:
 ```bash
