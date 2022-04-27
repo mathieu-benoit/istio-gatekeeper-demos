@@ -14,8 +14,8 @@ tests:
         assertions:
           - violations: yes
   - name: sidecar-injection-annotation
-    template: ../constrainttemplates/sidecar-injection-annotation.yaml
-    constraint: ../constraints/sidecar-injection-annotation.yaml
+    template: ../constrainttemplates/sidecar-injection/sidecar-injection-annotation.yaml
+    constraint: ../constraints/sidecar-injection/sidecar-injection-annotation.yaml
     cases:
       - name: example-allowed
         object: sidecar-injection-annotation/example-allowed.yaml

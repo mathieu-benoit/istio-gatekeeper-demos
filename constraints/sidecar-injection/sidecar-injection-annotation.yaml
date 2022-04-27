@@ -16,3 +16,4 @@ spec:
       - Pod
     excludedNamespaces:
     - kube-system # to exclude istio-cni pods.
+    - istio-system

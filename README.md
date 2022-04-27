@@ -1,9 +1,99 @@
+## Setup
+
+Create a Kubernetes clusters, for example in GCP you could run this:
+```bash
+CLUSTER_NAME=istio-gatekeeper-demo
+CLUSTER_ZONE=us-east4-a
+gcloud container clusters create ${CLUSTER_NAME} \
+    --zone ${CLUSTER_ZONE} \
+    --machine-type=e2-standard-2
+```
+
+Install Istio:
+```bash
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.3 sh -
+cd istio-$ISTIO_VERSION
+export PATH=$PWD/bin:$PATH
+istioctl install --set profile=minimal -y
+```
+
+Install Gatekeeper:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.8/deploy/gatekeeper.yaml
+```
+
+Deploy Ingress Gateway:
+```bash
+kubectl create namespace istio-ingress
+kubectl label namespace istio-ingress istio-injection=enabled
+kubectl apply -f istio-ingressgateway/base/
+kubectl apply -f istio-ingressgateway/gateway.yaml
+```
+
+Deploy Online Boutique sample apps:
+```bash
+kubectl create namespace onlineboutique
+kubectl label namespace onlineboutique istio-injection=enabled
+kubectl apply -f onlineboutique/base/
+kubectl apply -f onlineboutique/frontend-virtualservice.yaml
+```
+
+```bash
+echo -n "http://" && \
+kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.loadBalancer.ingress[0].ip'
+```
+
 ## Demos
 
 ### Enforce ASM sidecar injection
 
 - `K8sRequiredLabels`
 - `SidecarInjectionAnnotation`
+
+```bash
+kubectl apply -f constrainttemplates/sidecar-injection
+kubectl apply -f constraints/sidecar-injection
+```
+
+```bash
+kubectl get constrainttemplates
+```
+
+Output similar to:
+```output
+NAME                         AGE
+k8srequiredlabels            47s
+sidecarinjectionannotation   47s
+```
+
+```bash
+kubectl get constraints
+```
+
+Output similar to:
+```output
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 2
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 2
+```
+
+```bash
+kubectl get sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation -ojsonpath='{.status.violations}' | jq
+```
+
+```bash
+kubectl get k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label -ojsonpath='{.status.violations}' | jq
+```
+
+```bash
+kubectl create namespace test
+```
+
+```output
+Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: [namespace-sidecar-injection-label] you must provide labels: {"istio.io/rev"}
+```
 
 ### Enforce STRICT mTLS in the Mesh
 
@@ -14,7 +104,3 @@
 ### Enforce AuthorizationPolicies
 
 - `AuthzPolicyDefaultDeny`
-
-### Enforce Service port name
-
-- `AllowedServicePortName`

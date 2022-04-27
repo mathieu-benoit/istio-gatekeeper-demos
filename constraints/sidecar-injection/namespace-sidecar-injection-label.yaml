@@ -23,5 +23,5 @@ spec:
     - resource-group-system
   parameters:
     labels:
-    - key: istio.io/rev
-      # allowedRegex: FIXME
+    - key: istio-injection
+      allowedRegex: enabled
