@@ -5,11 +5,16 @@ TOC:
   - [Create Kubernetes cluster](#create-kubernetes-cluster)
   - [Install Istio](#install-istio)
   - [Install Gatekeeper](#install-gatekeeper)
+  - [Deploy Ingress Gateway](#deploy-ingress-gateway)
+  - [Deploy sample apps](#deploy-sample-apps)
 - [Demos](#demos)
+  - [Enforce Istio sidecar injection](#enforce-istio-sidecar-injection)
+  - [Enforce `STRICT` mTLS in the Mesh](#enforce-strict-mtls-in-the-mesh)
+  - [Shifting left the detection of the `Constraints` violations](#shifting-left-the-detection-of-the-constraints-violations)
 
 ## Setup
 
-As prerequistes, you need to have these tools installed locally:
+As prerequisites, you need to have these tools installed locally:
 - `istioctl`
 - `kpt`
 - `helm`
@@ -43,7 +48,7 @@ helm install gatekeeper/gatekeeper --name-template=gatekeeper --namespace gateke
 
 ## Deploy Ingress Gateway
 
-Deploy an Istio Ingress Gateway:
+Deploy an Istio Ingress Gateway in your cluster:
 ```bash
 kubectl create namespace istio-ingress
 kubectl label namespace istio-ingress istio-injection=enabled
@@ -53,7 +58,7 @@ kubectl apply -f istio-ingressgateway/gateway.yaml
 
 ## Deploy sample apps
 
-Deploy the [Online Boutique sample]() apps:
+Deploy the Online Boutique sample apps in your cluster:
 ```bash
 kubectl create namespace onlineboutique
 kubectl label namespace onlineboutique istio-injection=enabled
@@ -70,7 +75,7 @@ _Note: you may need to re-run this command above couple of times in order to get
 
 ## Demos
 
-Cleanup before the demo:
+In case you run multiple times this section of demos, here is the cleanup routine you can run to have a clean setup:
 ```bash
 kubectl delete constraints --all
 kubectl delete constrainttemplates --all
@@ -232,15 +237,9 @@ FIXME
 
 ### Shifting left the detection of the `Constraints` violations
 
-Install `kpt`:
-```bash
-curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > kpt
-chmod +x kpt
-```
-
 Let's evaluate the `Constraints` locally against the Kubernetes manifests we have in the current folder:
 ```bash
-./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
+kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
 ```
 
 Output similar to:
@@ -257,4 +256,4 @@ Output similar to:
 
 We could even show this in action from within your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, etc. Let's do the demo with GitHub actions here!
 
-This command above is included in this [`.github/workflows/ci.yaml`] file. Let's see this in actions via the GitHub UI.
+This command above is included in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. Let's see this in actions via the GitHub UI.
