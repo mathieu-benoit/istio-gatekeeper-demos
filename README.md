@@ -1,6 +1,6 @@
-# Istio+Gatekeeper, FTW
+# Istio + Gatekeeper
 
-Resources and walkthrough for the [Istio+Gateekper, FTW](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/) talk at IstioCon 2022.
+Resources and walkthrough for the [Istio + Gateekper](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/) talk at IstioCon 2022.
 
 - [Setup](#setup)
   - [Create Kubernetes cluster](#create-kubernetes-cluster)
@@ -78,7 +78,7 @@ echo -n "http://" && \
 kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.loadBalancer.ingress[0].ip'
 ```
 
-Check the number of proxies running in your mesh:
+Check the number of proxies (13) running in your mesh:
 ```bash
 istioctl version
 ```
