@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: emailservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,6 +66,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: checkoutservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -141,6 +143,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: recommendationservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -208,6 +211,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: frontend
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -302,6 +306,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: paymentservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -365,6 +370,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: productcatalogservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -430,6 +436,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cartservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -490,6 +497,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: loadgenerator
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -547,6 +555,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: currencyservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -611,6 +620,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: shippingservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -676,6 +686,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: redis-cart
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -737,6 +748,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: adservice
+  namespace: onlineboutique
 ---
 apiVersion: apps/v1
 kind: Deployment

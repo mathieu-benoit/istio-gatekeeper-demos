@@ -11,6 +11,7 @@ Resources and walkthrough for the [Istio + Gateekper](https://events.istio.io/is
 - [Demos](#demos)
   - [Enforce Istio sidecar injection](#enforce-istio-sidecar-injection)
   - [Enforce `STRICT` mTLS in the Mesh](#enforce-strict-mtls-in-the-mesh)
+  - [Enforce `AuthorizationPolicies`](#enforce-authorizationpolicies)
   - [Shift enforcement left](#shifting-left-the-detection-of-the-constraints-violations)
 
 ## Setup
@@ -96,7 +97,10 @@ _In case you run multiple times this section of demos in the same cluster, here 
 ```bash
 kubectl delete constraints --all
 kubectl delete constrainttemplates --all
-kubectl delete peerauthentication default -n istio-system
+kubectl delete peerauthentication strict-mtls -n istio-system
+kubectl delete authorizationpolicy deny-all -n istio-system
+kubectl delete authorizationpolicy istio-ingressgateway -n istio-ingress
+kubectl delete authorizationpolicy --all -n onlineboutique
 ```
 
 ### Enforce Istio sidecar injection
@@ -201,7 +205,7 @@ NAME                                                                            
 k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
 ```
 
-We could see after a few minutes that Gatekeeper will raise violations for the `AsmPeerAuthnMeshStrictMtls` `Constraint`:
+We could look at the violation detected for the  `AsmPeerAuthnMeshStrictMtls` `Constraint` to get more details:
 ```bash
 kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls -ojsonpath='{.status.violations}' | jq
 ```
@@ -220,7 +224,7 @@ The output is similar to:
 
 We could fix this violation by deploying the default `STRICT` mTLS `PeerAuthentication` in the `istio-system` namespace:
 ```bash
-kubectl -n istio-system apply -f istio-system/default-strict-peerauthentication.yaml
+kubectl apply -f istio-system/default-strict-peerauthentication.yaml
 ```
 
 After a few minutes, verify that the `Constraints` don't have any remaining violations:
@@ -250,9 +254,120 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 - `AuthzPolicyDefaultDeny`
 
-FIXME
+Let's deploy these two `constraints` and `constrainttemplates`:
+```bash
+kubectl apply -f constrainttemplates/authorization-policies
+kubectl apply -f constraints/authorization-policies
+```
+
+Verify that the two `constrainttemplates` has been deployed successfully:
+```bash
+kubectl get constrainttemplates
+```
+
+Output similar to:
+```output
+NAME                         AGE
+authzpolicydefaultdeny       10s
+destinationruletlsenabled    13h
+k8srequiredlabels            13h
+peerauthnmeshstrictmtls      13h
+peerauthnstrictmtls          13h
+sidecarinjectionannotation   13h
+```
+
+Verify that the two `constraints` has been deployed successfully:
+```bash
+kubectl get constraints
+```
+
+Output similar to:
+```output
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
+
+NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
+
+NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               1
+
+NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
+```
+
+We could look at the violation detected for the `AuthzPolicyDefaultDeny` `Constraint` to get more details:
+```bash
+kubectl get authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies -ojsonpath='{.status.violations}' | jq
+```
+
+The output is similar to:
+```output
+[
+  {
+    "enforcementAction": "dryrun",
+    "kind": "Namespace",
+    "message": "Root namespace <istio-system> does not have a default deny AuthorizationPolicy",
+    "name": "istio-system"
+  }
+]
+```
+
+We could fix this violation by deploying the default deny `AuthorizationPolicy` in the `istio-system` namespace:
+```bash
+kubectl apply -f istio-system/default-deny-authorizationpolicy.yaml
+```
+
+After a few minutes, verify that the `Constraints` don't have any remaining violations:
+```bash
+kubectl get constraints
+```
+
+The output is similar to:
+```output
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
+
+NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
+
+NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               0
+
+NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
+```
+
+Visit the Online Boutique website from your browser, you should receive the error: `RBAC: access denied` which confirms that the default deny `AuthorizationPolicy` applies to the entire mesh.
+
+Fix this issue by deploying more granular `AuthorizationPolicy` resources in both the Ingress Gateway and the Online Boutique namespaces:
+```bash
+kubectl apply -f istio-ingressgateway/authorizationpolicy.yaml
+kubectl apply -f onlineboutique/authorizationpolicies.yaml 
+```
+
+Visit again the Online Boutique website from your browser, you should now see it working successfully now.
+
+
+Congrats! You have secured your mesh and your Online Boutique website with 
 
 ### Shift enforcement left
+
+But now, what if you want to detect `Constraints` violations earlier in the process, without waiting for an actual deployment of your Kubernetes resources in a cluster?
+
+Let's see how we could shift left this detection!
 
 Let's evaluate the `Constraints` locally against the Kubernetes manifests we have in the current folder:
 ```bash
