@@ -97,7 +97,6 @@ _In case you run multiple times this section of demos in the same cluster, here 
 ```bash
 kubectl delete constraints --all
 kubectl delete constrainttemplates --all
-kubectl delete config config -n gatekeeper-system
 kubectl delete peerauthentication strict-mtls -n istio-system
 kubectl delete authorizationpolicy deny-all -n istio-system
 kubectl delete authorizationpolicy istio-ingressgateway -n istio-ingress
