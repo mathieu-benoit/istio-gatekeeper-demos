@@ -9,6 +9,12 @@ TOC:
 
 ## Setup
 
+As prerequistes, you need to have these tools installed locally:
+- `istioctl`
+- `kpt`
+- `helm`
+- `kubectl`
+
 ### Create Kubernetes cluster
 
 Create a Kubernetes clusters, for example in GCP you could run this:
@@ -22,19 +28,17 @@ gcloud container clusters create ${CLUSTER_NAME} \
 
 ## Install Istio
 
-[Install Istio]():
+Install Istio in your cluster:
 ```bash
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.3 sh -
-cd istio-$ISTIO_VERSION
-export PATH=$PWD/bin:$PATH
 istioctl install --set profile=minimal -y
 ```
 
 ## Install Gatekeeper
 
-[Install Gatekeeper]():
+Install Gatekeeper in your cluster:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.8/deploy/gatekeeper.yaml
+helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
+helm install gatekeeper/gatekeeper --name-template=gatekeeper --namespace gatekeeper-system --create-namespace --set auditInterval=5
 ```
 
 ## Deploy Ingress Gateway
@@ -65,6 +69,13 @@ kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.l
 _Note: you may need to re-run this command above couple of times in order to get the public IP address value different from `null`._
 
 ## Demos
+
+Cleanup before the demo:
+```bash
+kubectl delete constraints --all
+kubectl delete constrainttemplates --all
+kubectl delete peerauthentication default -n istio-system
+```
 
 ### Enforce Istio sidecar injection
 
@@ -121,7 +132,7 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 
 Let's extend the default Gatekeeper config in order to take into account Istio resources:
 ```bash
-kubectl -n gatekeeper-system apply -f ${WORKDIR}/gatekeeper-system/config-referential-constraints.yaml
+kubectl -n gatekeeper-system apply -f gatekeeper-system/referential-constraints-config.yaml
 ```
 
 Let's deploy these two `constraints` and `constrainttemplates`:
