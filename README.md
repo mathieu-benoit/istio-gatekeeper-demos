@@ -223,9 +223,8 @@ FIXME
 
 Install `kpt`:
 ```bash
-curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.13/kpt_linux_amd64 > ./kpt
-
-chmod +x ./kpt
+curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > ./kpt
+chmod +x kpt
 ```
 
 Let's evaluate the `Constraints` locally against the Kubernetes manifests we have in the current folder:
