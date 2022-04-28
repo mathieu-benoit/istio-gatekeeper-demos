@@ -252,7 +252,7 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 ### Enforce `AuthorizationPolicies`
 
-- `AuthzPolicyDefaultDeny`
+- `AuthzPolicyDefaultDeny` - requires a default `deny` `AuthorizationPolicy` for the entire mesh in the `istio-system` namespace
 
 Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
@@ -361,11 +361,11 @@ kubectl apply -f onlineboutique/authorizationpolicies.yaml
 Visit again the Online Boutique website from your browser, you should now see it working successfully now.
 
 
-Congrats! You have secured your mesh and your Online Boutique website with 
+Congrats! You have secured your cluster, your mesh and your Online Boutique website with `STRICT` mTLS and fine granular `AuthorizationPolicies`, while enforcing this secure setup with associated policies and `Constraints`!
 
 ### Shift enforcement left
 
-But now, what if you want to detect `Constraints` violations earlier in the process, without waiting for an actual deployment of your Kubernetes resources in a cluster?
+But now, what if you want to detect `Constraints` violations earlier in the process, without waiting for an actual deployment into your Kubernetes resources in a cluster?
 
 Let's see how we could shift left this detection!
 
