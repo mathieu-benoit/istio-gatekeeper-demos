@@ -223,7 +223,7 @@ FIXME
 
 Install `kpt`:
 ```bash
-curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > ./kpt
+curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > kpt
 chmod +x kpt
 ```
 
