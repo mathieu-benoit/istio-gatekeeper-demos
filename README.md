@@ -2,7 +2,6 @@
 
 Resources and walkthrough for the [Istio+Gateekper, FTW](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/) talk at IstioCon 2022.
 
-TOC:
 - [Setup](#setup)
   - [Create Kubernetes cluster](#create-kubernetes-cluster)
   - [Install Istio](#install-istio)
@@ -16,7 +15,7 @@ TOC:
 
 ## Setup
 
-As prerequisites, you need to have these tools installed locally:
+As prerequisites, you need to have these tools installed in order to run this demo:
 - `istioctl`
 - `kpt`
 - `helm`
@@ -68,16 +67,32 @@ kubectl apply -f onlineboutique/base/
 kubectl apply -f onlineboutique/frontend-virtualservice.yaml
 ```
 
+Wait for the public IP address to be provisioned:
+```bash
+until kubectl get svc istio-ingressgateway -n istio-ingress -o jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done
+```
+
 Open the generated public IP address to browse the Online Boutique website:
 ```bash
 echo -n "http://" && \
 kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.loadBalancer.ingress[0].ip'
 ```
-_Note: you may need to re-run this command above couple of times in order to get the public IP address value different from `null`._
+
+Check the number of proxies running in your mesh:
+```bash
+istioctl version
+```
+
+Output similar to:
+```output
+client version: 1.13.3
+control plane version: 1.13.3
+data plane version: 1.13.3 (13 proxies)
+```
 
 ## Demos
 
-In case you run multiple times this section of demos, here is the cleanup routine you can run to have a clean setup:
+_In case you run multiple times this section of demos in the same cluster, here is the cleanup routine you can run to have a clean setup:_
 ```bash
 kubectl delete constraints --all
 kubectl delete constrainttemplates --all
@@ -86,8 +101,8 @@ kubectl delete peerauthentication default -n istio-system
 
 ### Enforce Istio sidecar injection
 
-- `K8sRequiredLabels`
-- `SidecarInjectionAnnotation`
+- `K8sRequiredLabels` - requires any `Namespace` in the mesh to contain the specific Istio sidecar proxy injection label: `istio-injection` with the value `enabled`
+- `SidecarInjectionAnnotation` - prohibits any `Pod` in the mesh to by-pass the Istio proxy sidecar injection
 
 Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
@@ -133,9 +148,9 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 
 ### Enforce `STRICT` mTLS in the Mesh
 
-- `PeerAuthnMeshStrictMtls`
-- `PeerAuthnStrictMtls`
-- `DestinationRuleTLSEnabled`
+- `PeerAuthnMeshStrictMtls` - requires a default `STRICT` mTLS `PeerAuthentication` for the entire mesh in the `istio-system` namespace
+- `PeerAuthnStrictMtls` - prohibits disabling `STRICT` mTLS for all `PeerAuthentications`
+- `DestinationRuleTLSEnabled` - prohibits disabling `STRICT` mTLS for all hosts and host subsets in `DestinationRules`
 
 Let's extend the default Gatekeeper config in order to take into account Istio resources:
 ```bash
