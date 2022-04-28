@@ -1,4 +1,6 @@
-# Resources and walkthrough for the Istio+Gateekper, FTW talk at IstioCon 2022
+# Istio+Gatekeeper, FTW
+
+Resources and walkthrough for the [Istio+Gateekper, FTW](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/) talk at IstioCon 2022.
 
 TOC:
 - [Setup](#setup)
