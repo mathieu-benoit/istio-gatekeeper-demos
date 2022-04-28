@@ -1,4 +1,15 @@
+# Resources and walkthrough for the Istio+Gateekper, FTW talk at IstioCon 2022
+
+TOC:
+- [Setup](#setup)
+  - [Create Kubernetes cluster](#create-kubernetes-cluster)
+  - [Install Istio](#install-istio)
+  - [Install Gatekeeper](#install-gatekeeper)
+- [Demos](#demos)
+
 ## Setup
+
+### Create Kubernetes cluster
 
 Create a Kubernetes clusters, for example in GCP you could run this:
 ```bash
@@ -9,6 +20,8 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type=e2-standard-2
 ```
 
+## Install Istio
+
 [Install Istio]():
 ```bash
 curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.3 sh -
@@ -17,10 +30,14 @@ export PATH=$PWD/bin:$PATH
 istioctl install --set profile=minimal -y
 ```
 
+## Install Gatekeeper
+
 [Install Gatekeeper]():
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.8/deploy/gatekeeper.yaml
 ```
+
+## Deploy Ingress Gateway
 
 Deploy an Istio Ingress Gateway:
 ```bash
@@ -29,6 +46,8 @@ kubectl label namespace istio-ingress istio-injection=enabled
 kubectl apply -f istio-ingressgateway/base/
 kubectl apply -f istio-ingressgateway/gateway.yaml
 ```
+
+## Deploy sample apps
 
 Deploy the [Online Boutique sample]() apps:
 ```bash
@@ -204,7 +223,8 @@ FIXME
 
 Install `kpt`:
 ```bash
-curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.14/kpt_linux_amd64 > ./kpt
+curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v1.0.0-beta.13/kpt_linux_amd64 > ./kpt
+
 chmod +x ./kpt
 ```
 
