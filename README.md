@@ -12,7 +12,7 @@ TOC:
 - [Demos](#demos)
   - [Enforce Istio sidecar injection](#enforce-istio-sidecar-injection)
   - [Enforce `STRICT` mTLS in the Mesh](#enforce-strict-mtls-in-the-mesh)
-  - [Shifting left the detection of the `Constraints` violations](#shifting-left-the-detection-of-the-constraints-violations)
+  - [Shift enforcement left](#shifting-left-the-detection-of-the-constraints-violations)
 
 ## Setup
 
@@ -237,7 +237,7 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 FIXME
 
-### Shifting left the detection of the `Constraints` violations
+### Shift enforcement left
 
 Let's evaluate the `Constraints` locally against the Kubernetes manifests we have in the current folder:
 ```bash
