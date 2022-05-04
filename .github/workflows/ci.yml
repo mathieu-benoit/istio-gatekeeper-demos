@@ -15,7 +15,7 @@ jobs:
           tar xvf gator-v${GATOR_VERSION}-linux-amd64.tar.gz && rm gator-v${GATOR_VERSION}-linux-amd64.tar.gz
         env:
           GATOR_VERSION: 3.8.0
-      - name: gator test -v
-        run: ./gator test -v test/suite.yaml
-      - name: gator test -f
+      - name: gator verify
+        run: ./gator verify test/suite.yaml
+      - name: gator test
         run: ./gator test -f .
