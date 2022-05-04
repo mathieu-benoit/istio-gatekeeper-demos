@@ -18,4 +18,7 @@ jobs:
       - name: gator verify
         run: ./gator verify test/suite.yaml
       - name: gator test
-        run: ./gator test -f .
+        run: |
+          rm -rf test
+          rm .github/workflows/ci.yml
+          ./gator test -f .
