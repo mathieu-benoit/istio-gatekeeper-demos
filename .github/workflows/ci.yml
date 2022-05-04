@@ -21,4 +21,4 @@ jobs:
         run: |
           rm -rf test
           rm .github/workflows/ci.yml
-          ./gator test -f .
+          ./gator test -f . --output=json
