@@ -365,11 +365,11 @@ Congrats! You have secured your cluster, your mesh and your Online Boutique webs
 
 ### Shift enforcement left
 
-But now, what if you want to detect `Constraints` violations earlier in the process, without waiting for an actual deployment into your Kubernetes resources in a cluster?
+But now, what if you want to detect `Constraints` violations earlier in the process, without waiting for an actual deployment into your Kubernetes cluster?
 
-Let's see how we could shift left this detection!
+Let's see how we could shift left this detection, even from your local machine! You have 2 options, you could either with `gator` or `kpt`.
 
-Let's evaluate the `Constraints` locally against the Kubernetes manifests we have in the current folder:
+With `kpt`:
 ```bash
 kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
 ```
@@ -386,6 +386,16 @@ Output similar to:
   Exit code: 1
 ```
 
-We could even show this in action from within your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, etc. Let's do the demo with GitHub actions here!
+With `gator`:
+```bash
+gator test -f .
+```
 
-This command above is included in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. Let's see this in actions via the GitHub UI.
+Output similar to:
+```output
+Message: "the service port name <redis> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"
+```
+
+You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, etc.
+
+You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can also look at the details of one run in the [history of this GitHub repository](https://github.com/mathieu-benoit/istio-gatekeeper-demos/actions).
