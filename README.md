@@ -17,10 +17,11 @@ Resources and walkthrough for the [Istio + Gateekper](https://events.istio.io/is
 ## Setup
 
 As prerequisites, you need to have these tools installed in order to run this demo:
-- `istioctl`
-- `kpt`
-- `helm`
-- `kubectl`
+- [`istioctl`](https://istio.io/latest/docs/ops/diagnostic-tools/istioctl)
+- [`kpt`](https://kpt.dev/installation/)
+- [`helm`](https://helm.sh/docs/intro/install/)
+- [`kubectl`](https://open-policy-agent.github.io/gatekeeper/website/docs/gator/)
+- [`gator`](https://open-policy-agent.github.io/gatekeeper/website/docs/gator/)
 
 ### Create Kubernetes cluster
 
