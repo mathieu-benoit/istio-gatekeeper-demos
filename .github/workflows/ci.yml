@@ -33,3 +33,5 @@ jobs:
       - name: gatekeeper
         run: |
           ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
+      - name: job summary
+        run: echo ‘### Hello world! :rocket:’ >> $GITHUB_STEP_SUMMARY
