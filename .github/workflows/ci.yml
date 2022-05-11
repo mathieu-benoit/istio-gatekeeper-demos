@@ -21,7 +21,7 @@ jobs:
         run: |
           rm -rf test
           rm .github/workflows/ci.yml
-          ./gator test -f .
+          ./gator test -f . >> GITHUB_STEP_SUMMARY 
   kpt:
     runs-on: ubuntu-20.04
     steps:
@@ -32,7 +32,4 @@ jobs:
           chmod +x kpt
       - name: gatekeeper
         run: |
-          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
-      - name: job summary
-        if: ${{ always() }}
-        run: echo ‘### Hello world! :rocket:’ >> $GITHUB_STEP_SUMMARY
+          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2  >> GITHUB_STEP_SUMMARY
