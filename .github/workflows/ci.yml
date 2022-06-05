@@ -31,7 +31,7 @@ jobs:
           curl -L https://github.com/GoogleContainerTools/kpt/releases/download/v${KPT_VERSION}/kpt_linux_amd64 > kpt
           chmod +x kpt
         env:
-          KPT_VERSION: 1.0.0-beta.14
+          KPT_VERSION: 1.0.0-beta.16
       - name: gatekeeper
         run: |
           ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
