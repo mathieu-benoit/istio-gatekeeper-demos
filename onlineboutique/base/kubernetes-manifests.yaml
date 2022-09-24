@@ -203,7 +203,7 @@ spec:
   selector:
     app: recommendationservice
   ports:
-  - name: test
+  - name: grpc
     port: 8080
     targetPort: 8080
 ---
