@@ -410,4 +410,4 @@ Message: "the service <emailservice> port name <bad-port-name> has a disallowed 
 
 You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, GitHub actions, etc.
 
-You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can [see this in action in this PR opened on this `pr-with-errors` branch](https://github.com/mathieu-benoit/istio-gatekeeper-demos/pull/9).
+You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can [see this in action in this PR opened on this `pr-with-errors` branch](https://github.com/mathieu-benoit/istio-gatekeeper-demos/actions/runs/3119574752).
