@@ -28,7 +28,7 @@ spec:
         port := service.spec.ports[_]
         prefixes := input.parameters.prefixes
         not is_prefixed(port, prefixes)
-        msg := sprintf("the service port name <%v> has a disallowed prefix, allowed prefixes are %v", [port.name, prefixes])
+        msg := sprintf("the service <%v> port name <%v> has a disallowed prefix, allowed prefixes are %v", [service.metadata.name, port.name, prefixes])
       }
 
       is_prefixed(port, prefixes) {
