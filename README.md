@@ -370,6 +370,11 @@ But now, what if you want to detect `Constraints` violations earlier in the proc
 
 Let's see how we could shift left this detection, even from your local machine! You have 2 options, you could either with `gator` or `kpt`.
 
+Let's use a dedicated `pr-with-errors` branch with some errors generated for the purpose of this section:
+```bash
+git checkout pr-with-errors
+```
+
 With `kpt`:
 ```bash
 kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
@@ -378,25 +383,31 @@ kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
 Output similar to:
 ```output
 [RUNNING] "gcr.io/kpt-fn/gatekeeper:v0.2"
-[FAIL] "gcr.io/kpt-fn/gatekeeper:v0.2" in 2.2s
+[FAIL] "gcr.io/kpt-fn/gatekeeper:v0.2" in 1.8s
   Results:
-    [error] v1/Service/onlineboutique/redis-cart: the service port name <redis> has a disallowed prefix, allowed prefixes are ["http", "grpc", "tcp"] violatedConstraint: port-name-constraint
+    [error] v1/Service/onlineboutique/emailservice: the service <emailservice> port name <bad-port-name> has a disallowed prefix, allowed prefixes are ["http", "grpc", "tcp"] violatedConstraint: port-name-constraint
+    [error] v1/Namespace/onlineboutique: you must provide labels: {"istio-injection"} violatedConstraint: namespace-sidecar-injection-label
   Stderr:
-    "[error] v1/Service/onlineboutique/redis-cart : the service port name <redis> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"
+    "[error] v1/Service/onlineboutique/emailservice : the service <emailservice> port name <bad-port-name> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"
     "violatedConstraint: port-name-constraint"
+    ""
+    "[error] v1/Namespace/onlineboutique : you must provide labels: {\"istio-injection\"}"
+    ...(1 line(s) truncated, use '--truncate-output=false' to disable)
   Exit code: 1
 ```
 
 With `gator`:
 ```bash
+rm .github/workflows/ci.yml 
+rm -rf test/
 gator test -f .
 ```
 
 Output similar to:
 ```output
-Message: "the service port name <redis> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"
+Message: "the service <emailservice> port name <bad-port-name> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"Message: "you must provide labels: {\"istio-injection\"}"
 ```
 
-You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, etc.
+You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, GitHub actions, etc.
 
-You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can also look at the details of one run in the [history of this GitHub repository](https://github.com/mathieu-benoit/istio-gatekeeper-demos/actions).
+You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can [see this in action in this PR opened on this `pr-with-errors` branch](https://github.com/mathieu-benoit/istio-gatekeeper-demos/pull/9).
