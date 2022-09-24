@@ -42,4 +42,4 @@ jobs:
       - name: write errors in summary
         if: ${{ failure() }}
         run: |
-          cat results.yaml | ./yq -r '.items[]?.results' -o json | jq -r '.[]? | "❌ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+          cat results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "❌ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
