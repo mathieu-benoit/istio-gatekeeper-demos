@@ -203,7 +203,7 @@ spec:
   selector:
     app: recommendationservice
   ports:
-  - name: grpc
+  - name: test
     port: 8080
     targetPort: 8080
 ---
@@ -740,7 +740,7 @@ spec:
   selector:
     app: redis-cart
   ports:
-  - name: tcp
+  - name: redis
     port: 6379
     targetPort: 6379
 ---
