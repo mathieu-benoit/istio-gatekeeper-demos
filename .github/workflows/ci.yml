@@ -21,7 +21,7 @@ jobs:
         run: |
           rm -rf test
           rm .github/workflows/ci.yml
-          ./gator test -f . -o json | tee gator-error.json
+          ./gator test -f . -o json 2>&1 | tee gator-error.json
       - name: write errors in summary
         if: ${{ failure() }}
         run: |
