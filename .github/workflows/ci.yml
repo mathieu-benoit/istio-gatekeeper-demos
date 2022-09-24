@@ -22,7 +22,6 @@ jobs:
           rm -rf test
           rm .github/workflows/ci.yml
           ./gator test -f . -o json > gator-error.json
-          cat gator-error.json
       - name: write errors in summary
         if: ${{ failure() }}
         run: |
@@ -44,5 +43,3 @@ jobs:
         if: ${{ failure() }}
         run: |
           cat results.yaml | yq .items[].results.[].message | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
-        env:
-          YQ_VERSION: 4.27.5
