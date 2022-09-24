@@ -38,4 +38,12 @@ jobs:
           KPT_VERSION: 1.0.0-beta.20
       - name: gatekeeper
         run: |
-          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
+          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2 --results-dir .
+      - name: write errors in summary
+        if: ${{ failure() }}
+        run: |
+          curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 -o yq
+          chmod +x yq
+          cat results.yaml | ./yq .items[].results.[].message >> $GITHUB_STEP_SUMMARY
+        env:
+          YQ_VERSION: 4.27.5
