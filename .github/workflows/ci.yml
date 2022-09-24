@@ -22,6 +22,10 @@ jobs:
           rm -rf test
           rm .github/workflows/ci.yml
           ./gator test -f . -o json > gator-error.json
+      - name: write errors in summary
+        if: ${{ failure() }}
+        run: |
+          cat gator-error.json | jq -r '.[]? | "\(.constraint.kind) - \(.msg)"' >> $GITHUB_STEP_SUMMARY
   kpt:
     runs-on: ubuntu-22.04
     steps:
