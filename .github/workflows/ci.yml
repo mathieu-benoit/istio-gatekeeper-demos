@@ -25,6 +25,7 @@ jobs:
       - name: write errors in summary
         if: ${{ failure() }}
         run: |
+          echo "🚫 gator errors:" >> $GITHUB_STEP_SUMMARY
           cat gator-error.json | jq -r '.[]? | "❌ \(.constraint.metadata.name) - \(.msg)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
   kpt:
     runs-on: ubuntu-22.04
@@ -42,4 +43,5 @@ jobs:
       - name: write errors in summary
         if: ${{ failure() }}
         run: |
+          echo "🚫 gatekeeper errors:" >> $GITHUB_STEP_SUMMARY
           cat results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "❌ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
