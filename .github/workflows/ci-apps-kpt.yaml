@@ -26,10 +26,16 @@ jobs:
         env:
           KPT_VERSION: 1.0.0-beta.21
       - name: gatekeeper
+        id: gatekeeper
         run: |
-          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2 --results-dir .
-      - name: write errors in summary
-        if: ${{ failure() }}
+          ./kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2 --results-dir tmp
+      - name: gatkeeper errors in summary
+        if: ${{ failure() && steps.gatekeeper.outcome == 'failure' }}
         run: |
-          echo "🚫 gatekeeper errors:" >> $GITHUB_STEP_SUMMARY
-          cat results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "❌ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+          if [ -f tmp/results.yaml ]; then
+            echo "❌ gatekeeper errors:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat tmp/results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "➡️ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            rm tmp/results.yaml
+          fi
