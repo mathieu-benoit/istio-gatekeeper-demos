@@ -1,0 +1,8 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: best-app-ever
+  namespace: best-app-ever
+spec:
+  mtls:
+    mode: DISABLE
