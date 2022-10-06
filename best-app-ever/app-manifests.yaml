@@ -15,7 +15,7 @@ spec:
     - port: 80
       targetPort: http
       protocol: TCP
-      name: http
+      name: test
   selector:
     app: best-app-ever
 ---
