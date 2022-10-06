@@ -3,7 +3,17 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '**/README.md'
+      - 'docs/**'
+      - '.github/workflows/ci-apps-gator.yaml'
+      - '.github/workflows/ci-policies.yaml'
   pull_request:
+    paths-ignore:
+      - '**/README.md'
+      - 'docs/**'
+      - '.github/workflows/ci-apps-gator.yaml'
+      - '.github/workflows/ci-policies.yaml'
 jobs:
   kpt:
     runs-on: ubuntu-22.04
