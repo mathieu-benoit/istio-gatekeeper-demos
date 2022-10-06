@@ -7,11 +7,21 @@ on:
       - 'constraints/**'
       - 'constrainttemplates/**'
       - 'test/**'
+    paths-ignore:
+      - '**/README.md'
+      - 'docs/**'
+      - '.github/workflows/ci-apps-kpt.yaml'
+      - '.github/workflows/ci-apps-gator.yaml'
   pull_request:
     paths:
       - 'constraints/**'
       - 'constrainttemplates/**'
       - 'test/**'
+    paths-ignore:
+      - '**/README.md'
+      - 'docs/**'
+      - '.github/workflows/ci-apps-kpt.yaml'
+      - '.github/workflows/ci-apps-gator.yaml'
 jobs:
   gator:
     runs-on: ubuntu-22.04
