@@ -400,9 +400,9 @@ But now, what if you want to detect `Constraints` violations earlier in the proc
 
 Let's see how we could shift left this detection, even from your local machine! You have 2 options, you could either with `gator` or `kpt`.
 
-Let's use a dedicated `pr-with-errors` branch with some errors generated for the purpose of this section:
+Let's use a dedicated `ob-with-errors` branch with some errors generated for the purpose of this section:
 ```bash
-git checkout pr-with-errors
+git checkout ob-with-errors
 ```
 
 With `kpt`:
@@ -440,6 +440,8 @@ Output similar to:
 Message: "the service <emailservice> port name <bad-port-name> has a disallowed prefix, allowed prefixes are [\"http\", \"grpc\", \"tcp\"]"Message: "you must provide labels: {\"istio-injection\"}"
 ```
 
-You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, GitHub actions, etc.
+You could even do this in your own CI/CD pipelines like Jenkins, Azure Devops, Cloud Build, GitHub actions, etc. With GitHub actions that's illustrated in this repo:
+- [`.github/workflows/ci-apps-gator.yml`](.github/workflows/ci-apps-gator.yml)
+- [`.github/workflows/ci-apps-kpt.yml`](.github/workflows/ci-apps-kpt.yml)
 
-You can see the 2 options illustrated in this [`.github/workflows/ci.yml`](.github/workflows/ci.yml) file. You can [see this in action in this PR opened on this `pr-with-errors` branch](https://github.com/mathieu-benoit/istio-gatekeeper-demos/actions/runs/3119574752).
+You can [see this in action in this PR opened on this `ob-with-errors` branch](https://github.com/mathieu-benoit/istio-gatekeeper-demos/pull/11).
