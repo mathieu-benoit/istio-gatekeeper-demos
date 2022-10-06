@@ -51,20 +51,18 @@ helm install gatekeeper/gatekeeper --name-template=gatekeeper --namespace gateke
 
 ## Deploy Ingress Gateway
 
-Deploy an Istio Ingress Gateway in your cluster:
+Deploy an Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
-kubectl create namespace istio-ingress
-kubectl label namespace istio-ingress istio-injection=enabled
+kubectl apply -f istio-ingressgateway/namespace.yaml
 kubectl apply -f istio-ingressgateway/base/
 kubectl apply -f istio-ingressgateway/gateway.yaml
 ```
 
 ## Deploy sample apps
 
-Deploy the Online Boutique sample apps in your cluster:
+Deploy the Online Boutique sample apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
-kubectl create namespace onlineboutique
-kubectl label namespace onlineboutique istio-injection=enabled
+kubectl apply -f onlineboutique/namespace.yaml
 kubectl apply -f onlineboutique/base/
 kubectl apply -f onlineboutique/frontend-virtualservice.yaml
 ```
