@@ -28,12 +28,18 @@ jobs:
       - name: gator verify
         run: ./gator verify test/suite.yaml
       - name: gator test
+        id: gator
         run: |
           rm -rf test
           rm .github/workflows/*
           ./gator test -f . -o json > gator-error.json
       - name: write errors in summary
-        if: ${{ failure() }}
+        if: ${{ failure() && steps.gator.outcome == 'failure' }}
         run: |
-          echo "🚫 gator errors:" >> $GITHUB_STEP_SUMMARY
-          cat gator-error.json | jq -r '.[]? | "❌ \(.constraint.metadata.name) - \(.msg)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+          if [ -f gator-error.json ]; then
+            echo "❌ gator errors:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat gator-error.json | jq -r '.[]? | "➡️ \(.constraint.metadata.name) - \(.msg)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            rm tmp/results.yaml
+          fi
