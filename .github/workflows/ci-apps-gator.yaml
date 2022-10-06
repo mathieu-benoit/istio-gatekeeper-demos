@@ -20,7 +20,7 @@ jobs:
       - name: gator test
         run: |
           rm -rf test
-          rm .github/workflows/ci.yml
+          rm .github/workflows/*
           ./gator test -f . -o json > gator-error.json
       - name: write errors in summary
         if: ${{ failure() }}
