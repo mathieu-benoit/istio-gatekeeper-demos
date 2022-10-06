@@ -35,7 +35,7 @@ jobs:
           if [ -f tmp/results.yaml ]; then
             echo "❌ gatekeeper errors:" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            cat tmp/results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "\(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
+            cat tmp/results.yaml | yq -r '.items[]?.results' -o json | jq -r '.[]? | "➡️ \(.message)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             rm tmp/results.yaml
           fi
