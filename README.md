@@ -63,7 +63,7 @@ kubectl apply -f istio-ingressgateway/gateway.yaml
 Deploy the Online Boutique sample apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply -f onlineboutique/namespace.yaml
-kubectl apply -f onlineboutique/base/
+kubectl apply -f onlineboutique/apps-manifests.yaml
 kubectl apply -f onlineboutique/frontend-virtualservice.yaml
 ```
 
