@@ -38,7 +38,9 @@ gcloud container clusters create ${CLUSTER_NAME} \
 
 Install Istio in your cluster:
 ```bash
-istioctl install --set profile=minimal -y
+istioctl install \
+    --set profile=minimal \
+    -y
 ```
 
 ## Install Gatekeeper
@@ -46,25 +48,35 @@ istioctl install --set profile=minimal -y
 Install Gatekeeper in your cluster:
 ```bash
 helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
-helm install gatekeeper/gatekeeper --name-template=gatekeeper --namespace gatekeeper-system --create-namespace --set auditInterval=5
+helm install gatekeeper/gatekeeper \
+    --name-template=gatekeeper \
+    --namespace gatekeeper-system \
+    --create-namespace \
+    --set auditInterval=5
 ```
 
 ## Deploy Ingress Gateway
 
 Deploy an Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
-kubectl apply -f istio-ingressgateway/namespace.yaml
-kubectl apply -f istio-ingressgateway/base/
-kubectl apply -f istio-ingressgateway/gateway.yaml
+kubectl apply \
+    -f istio-ingressgateway/namespace.yaml
+kubectl apply \
+    -f istio-ingressgateway/app-manifests.yaml
+kubectl apply \
+    -f istio-ingressgateway/gateway.yaml
 ```
 
 ## Deploy sample apps
 
 Deploy the Online Boutique sample apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
-kubectl apply -f onlineboutique/namespace.yaml
-kubectl apply -f onlineboutique/apps-manifests.yaml
-kubectl apply -f onlineboutique/frontend-virtualservice.yaml
+kubectl apply \
+    -f onlineboutique/namespace.yaml
+kubectl apply \
+    -f onlineboutique/apps-manifests.yaml
+kubectl apply \
+    -f onlineboutique/frontend-virtualservice.yaml
 ```
 
 Wait for the public IP address to be provisioned:
@@ -94,12 +106,19 @@ data plane version: 1.13.3 (13 proxies)
 
 _In case you run multiple times this section of demos in the same cluster, here is the cleanup routine you can run to have a clean setup:_
 ```bash
-kubectl delete constraints --all
-kubectl delete constrainttemplates --all
-kubectl delete peerauthentication strict-mtls -n istio-system
-kubectl delete authorizationpolicy deny-all -n istio-system
-kubectl delete authorizationpolicy istio-ingressgateway -n istio-ingress
-kubectl delete authorizationpolicy --all -n onlineboutique
+kubectl delete constraints \
+    --all
+kubectl delete constrainttemplates \
+    --all
+kubectl delete peerauthentication strict-mtls \
+    -n istio-system
+kubectl delete authorizationpolicy deny-all \
+    -n istio-system
+kubectl delete authorizationpolicy istio-ingressgateway \
+    -n istio-ingress
+kubectl delete authorizationpolicy \
+    --all \
+    -n onlineboutique
 ```
 
 ### Enforce Istio sidecar injection
@@ -109,8 +128,10 @@ kubectl delete authorizationpolicy --all -n onlineboutique
 
 Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
-kubectl apply -f constrainttemplates/sidecar-injection
-kubectl apply -f constraints/sidecar-injection
+kubectl apply \
+    -f constrainttemplates/sidecar-injection
+kubectl apply \
+    -f constraints/sidecar-injection
 ```
 
 Verify that the two `constrainttemplates` has been deployed successfully:
@@ -157,13 +178,17 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 
 Let's extend the default Gatekeeper config in order to take into account Istio resources:
 ```bash
-kubectl -n gatekeeper-system apply -f gatekeeper-system/referential-constraints-config.yaml
+kubectl apply \
+    -f gatekeeper-system/referential-constraints-config.yaml \
+    -n gatekeeper-system
 ```
 
 Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
-kubectl apply -f constrainttemplates/strict-mtls
-kubectl apply -f constraints/strict-mtls
+kubectl apply \
+    -f constrainttemplates/strict-mtls
+kubectl apply \
+    -f constraints/strict-mtls
 ```
 
 Verify that the two `constrainttemplates` has been deployed successfully:
@@ -206,7 +231,8 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 We could look at the violation detected for the  `PeerAuthnMeshStrictMtls` `Constraint` to get more details:
 ```bash
-kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls -ojsonpath='{.status.violations}' | jq
+kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls \
+    -ojsonpath='{.status.violations}' | jq
 ```
 
 The output is similar to:
@@ -223,7 +249,8 @@ The output is similar to:
 
 We could fix this violation by deploying the default `STRICT` mTLS `PeerAuthentication` in the `istio-system` namespace:
 ```bash
-kubectl apply -f istio-system/default-strict-peerauthentication.yaml
+kubectl apply \
+    -f istio-system/default-strict-peerauthentication.yaml
 ```
 
 After a few minutes, verify that the `Constraints` don't have any remaining violations:
@@ -255,8 +282,10 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 Let's deploy these two `constraints` and `constrainttemplates`:
 ```bash
-kubectl apply -f constrainttemplates/authorization-policies
-kubectl apply -f constraints/authorization-policies
+kubectl apply \
+    -f constrainttemplates/authorization-policies
+kubectl apply \
+    -f constraints/authorization-policies
 ```
 
 Verify that the two `constrainttemplates` has been deployed successfully:
@@ -303,7 +332,8 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 We could look at the violation detected for the `AuthzPolicyDefaultDeny` `Constraint` to get more details:
 ```bash
-kubectl get authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies -ojsonpath='{.status.violations}' | jq
+kubectl get authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies \
+    -ojsonpath='{.status.violations}' | jq
 ```
 
 The output is similar to:
@@ -353,8 +383,10 @@ Visit the Online Boutique website from your browser, you should receive the erro
 
 Fix this issue by deploying more granular `AuthorizationPolicy` resources in both the Ingress Gateway and the Online Boutique namespaces:
 ```bash
-kubectl apply -f istio-ingressgateway/authorizationpolicy.yaml
-kubectl apply -f onlineboutique/authorizationpolicies.yaml 
+kubectl apply \
+    -f istio-ingressgateway/authorizationpolicy.yaml
+kubectl apply \
+    -f onlineboutique/authorizationpolicies.yaml 
 ```
 
 Visit again the Online Boutique website from your browser, you should now see it working successfully now.
@@ -375,7 +407,8 @@ git checkout pr-with-errors
 
 With `kpt`:
 ```bash
-kpt fn eval . --image gcr.io/kpt-fn/gatekeeper:v0.2
+kpt fn eval . \
+    --image gcr.io/kpt-fn/gatekeeper:v0.2
 ```
 
 Output similar to:
@@ -398,7 +431,8 @@ With `gator`:
 ```bash
 rm .github/workflows/* 
 rm -rf test/
-gator test -f .
+gator test \
+    -f .
 ```
 
 Output similar to:
