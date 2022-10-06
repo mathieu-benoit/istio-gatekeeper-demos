@@ -127,7 +127,7 @@ metadata:
   namespace: onlineboutique
 spec:
   ports:
-  - name: grpc
+  - name: test
     port: 5000
     targetPort: 8080
   selector:
