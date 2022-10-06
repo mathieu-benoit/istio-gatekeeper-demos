@@ -204,7 +204,7 @@ NAME                                                                            
 k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
 ```
 
-We could look at the violation detected for the  `AsmPeerAuthnMeshStrictMtls` `Constraint` to get more details:
+We could look at the violation detected for the  `PeerAuthnMeshStrictMtls` `Constraint` to get more details:
 ```bash
 kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls -ojsonpath='{.status.violations}' | jq
 ```
@@ -396,7 +396,7 @@ Output similar to:
 
 With `gator`:
 ```bash
-rm .github/workflows/ci.yml 
+rm .github/workflows/* 
 rm -rf test/
 gator test -f .
 ```
