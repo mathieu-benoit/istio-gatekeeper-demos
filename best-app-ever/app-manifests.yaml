@@ -35,6 +35,8 @@ spec:
     metadata:
       labels:
         app: best-app-ever
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: best-app-ever
       securityContext:
