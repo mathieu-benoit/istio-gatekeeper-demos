@@ -1,0 +1,20 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: best-app-ever
+  namespace: best-app-ever
+spec:
+  selector:
+    matchLabels:
+      app: best-app-ever
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/istio-ingress/sa/istio-ingressgateway
+    to:
+    - operation:
+        methods:
+        - GET
+        ports:
+        - "80"
