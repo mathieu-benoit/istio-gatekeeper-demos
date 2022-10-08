@@ -19,7 +19,6 @@ CLUSTER_NAME=asm-poco-demo
 CLUSTER_ZONE=us-east4-a
 
 gcloud services enable container.googleapis.com
-
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
     --machine-type e2-standard-4 \
@@ -27,6 +26,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --workload-pool ${PROJECT_ID}.svc.id.goog \
     --labels mesh_id=proj-${PROJECT_NUMBER}
 
+gcloud services enable gkehub.googleapis.com
 gcloud container fleet memberships register ${CLUSTER_NAME} \
     --gke-cluster ${CLUSTER_ZONE}/${CLUSTER_NAME} \
     --enable-workload-identity
