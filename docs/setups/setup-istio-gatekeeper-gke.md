@@ -21,8 +21,8 @@ CLUSTER_NAME=istio-gatekeeper-demo
 CLUSTER_ZONE=us-east4-a
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
-    --machine-type e2-standard-2 \
-    --num-nodes 4
+    --machine-type e2-standard-4 \
+    --num-nodes 5
 ```
 
 ## Install Istio

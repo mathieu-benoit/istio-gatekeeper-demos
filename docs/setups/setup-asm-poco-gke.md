@@ -22,7 +22,7 @@ gcloud services enable container.googleapis.com
 
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
-    --machine-type e2-standard-2 \
+    --machine-type e2-standard-4 \
     --num-nodes 4 \
     --workload-pool ${PROJECT_ID}.svc.id.goog \
     --labels mesh_id=proj-${PROJECT_NUMBER} \
