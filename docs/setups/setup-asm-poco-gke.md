@@ -67,8 +67,6 @@ gcloud beta container fleet config-management apply \
 ## (Optional) Enable Config Sync
 
 ```bash
-gcloud beta container fleet config-management enable
-
 cat <<EOF > acm-config.yaml
 applySpecVersion: 1
 spec:
