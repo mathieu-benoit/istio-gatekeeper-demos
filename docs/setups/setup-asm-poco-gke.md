@@ -41,7 +41,7 @@ gcloud container fleet mesh enable
 
 gcloud container fleet mesh update \
     --management automatic \
-    --memberships ${CLUSTER}
+    --memberships ${CLUSTER_NAME}
 ```
 
 ## Enable Policy Controller
