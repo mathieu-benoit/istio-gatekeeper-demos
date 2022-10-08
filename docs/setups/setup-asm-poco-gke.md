@@ -25,7 +25,7 @@ gcloud container clusters create ${CLUSTER_NAME} \
     --machine-type e2-standard-4 \
     --num-nodes 4 \
     --workload-pool ${PROJECT_ID}.svc.id.goog \
-    --labels mesh_id=proj-${PROJECT_NUMBER} \
+    --labels mesh_id=proj-${PROJECT_NUMBER}
 
 gcloud container fleet memberships register ${CLUSTER_NAME} \
     --gke-cluster ${CLUSTER_ZONE}/${CLUSTER_NAME} \
