@@ -15,7 +15,7 @@ PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNum
 
 Create a GKE cluster:
 ```bash
-CLUSTER_NAME=istio-gatekeeper-demo
+CLUSTER_NAME=asm-poco-demo
 CLUSTER_ZONE=us-east4-a
 
 gcloud services enable container.googleapis.com

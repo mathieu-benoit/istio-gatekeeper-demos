@@ -5,6 +5,14 @@ As prerequisites, you need to have these tools installed:
 - [`istioctl`](https://istio.io/latest/docs/setup/install/istioctl/)
 - [`helm`](https://helm.sh/docs/intro/install/)
 
+## Set current project
+
+```
+PROJECT_ID=FIXME
+gcloud config set project ${PROJECT_ID}
+PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNumber)')
+```
+
 ## Create Kubernetes cluster
 
 Create a GKE cluster:
