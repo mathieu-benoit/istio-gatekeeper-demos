@@ -66,4 +66,20 @@ gcloud beta container fleet config-management apply \
 
 ## (Optional) Enable Config Sync
 
-_Coming, stay tuned!_
+```bash
+gcloud beta container fleet config-management enable
+
+cat <<EOF > acm-config.yaml
+applySpecVersion: 1
+spec:
+  configSync:
+    enabled: true
+  policyController:
+    enabled: true
+    templateLibraryInstalled: true
+    referentialRulesEnabled: true
+EOF
+gcloud beta container fleet config-management apply \
+    --membership ${CLUSTER_NAME} \
+    --config acm-config.yaml
+```
