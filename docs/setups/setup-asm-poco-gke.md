@@ -81,3 +81,24 @@ gcloud beta container fleet config-management apply \
     --membership ${CLUSTER_NAME} \
     --config acm-config.yaml
 ```
+
+```bash
+cat << EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+  name: custom:aggregate-to-edit:istio
+rules:
+- apiGroups:
+  - "networking.istio.io"
+  - "security.istio.io"
+  resources:
+  - "virtualservices"
+  - "authorizationpolicies"
+  - "gateways"
+  verbs:
+  - "*"
+EOF
+```
