@@ -13,7 +13,7 @@ As prerequisites, you need to have these tools installed:
 
 ## Sync the Ingress Gateway
 
-Deploy an Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
+Sync the Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 cat << EOF | kubectl apply -f -
 apiVersion: configsync.gke.io/v1beta1
@@ -27,7 +27,7 @@ spec:
     repo: https://github.com/mathieu-benoit/istio-gatekeeper-demos
     revision: HEAD
     branch: main
-    dir: istio-ingressgateway
+    dir: istio-ingress
     auth: none
 EOF
 ```
@@ -340,7 +340,7 @@ Visit the Online Boutique website from your browser, you should receive the erro
 Fix this issue by deploying more granular `AuthorizationPolicies` in both the Ingress Gateway and the Online Boutique namespaces:
 ```bash
 kubectl apply \
-    -f istio-ingressgateway/authorizationpolicy.yaml
+    -f istio-ingress/authorizationpolicy.yaml
 kubectl apply \
     -f onlineboutique/authorizationpolicies.yaml 
 ```

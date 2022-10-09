@@ -16,11 +16,11 @@ As prerequisites, you need to have these tools installed:
 Deploy an Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply \
-    -f istio-ingressgateway/namespace.yaml
+    -f istio-ingress/namespace.yaml
 kubectl apply \
-    -f istio-ingressgateway/app-manifests.yaml
+    -f istio-ingress/app-manifests.yaml
 kubectl apply \
-    -f istio-ingressgateway/gateway.yaml
+    -f istio-ingress/gateway.yaml
 ```
 
 ## Deploy sample apps
@@ -313,7 +313,7 @@ Visit the Online Boutique website from your browser, you should receive the erro
 Fix this issue by deploying more granular `AuthorizationPolicy` resources in both the Ingress Gateway and the Online Boutique namespaces:
 ```bash
 kubectl apply \
-    -f istio-ingressgateway/authorizationpolicy.yaml
+    -f istio-ingress/authorizationpolicy.yaml
 kubectl apply \
     -f onlineboutique/authorizationpolicies.yaml 
 ```
