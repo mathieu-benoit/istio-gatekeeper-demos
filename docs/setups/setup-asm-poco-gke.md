@@ -2,6 +2,7 @@
 
 As prerequisites, you need to have these tools installed:
 - [`gcloud`](https://cloud.google.com/sdk/docs/install)
+- [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 ## Set current project
 
@@ -82,6 +83,7 @@ gcloud beta container fleet config-management apply \
     --config acm-config.yaml
 ```
 
+Since the `RepoSync` reconcilers need additional permissions to create Istio resources, the following `ClusterRole` needs to be applied to the cluster:
 ```bash
 cat << EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1

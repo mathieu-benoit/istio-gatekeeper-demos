@@ -136,8 +136,7 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 Let's extend the default Gatekeeper config in order to take into account Istio resources:
 ```bash
 kubectl apply \
-    -f policies/gatekeeper-system/referential-constraints-config.yaml \
-    -n gatekeeper-system
+    -f policies/gatekeeper-system/referential-constraints-config.yaml
 ```
 
 Let's deploy these two `constraints` and `constrainttemplates`:
@@ -338,7 +337,7 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 Visit the Online Boutique website from your browser, you should receive the error: `RBAC: access denied` which confirms that the default deny `AuthorizationPolicy` applies to the entire mesh.
 
-Fix this issue by deploying more granular `AuthorizationPolicy` resources in both the Ingress Gateway and the Online Boutique namespaces:
+Fix this issue by deploying more granular `AuthorizationPolicies` in both the Ingress Gateway and the Online Boutique namespaces:
 ```bash
 kubectl apply \
     -f istio-ingressgateway/authorizationpolicy.yaml

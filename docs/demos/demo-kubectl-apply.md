@@ -109,8 +109,7 @@ Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" deni
 Let's extend the default Gatekeeper config in order to take into account Istio resources:
 ```bash
 kubectl apply \
-    -f policies/gatekeeper-system/referential-constraints-config.yaml \
-    -n gatekeeper-system
+    -f policies/gatekeeper-system/referential-constraints-config.yaml
 ```
 
 Let's deploy these two `constraints` and `constrainttemplates`:
