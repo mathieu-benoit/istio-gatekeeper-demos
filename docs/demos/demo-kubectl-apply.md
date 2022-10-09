@@ -2,7 +2,7 @@
 
 With these demos you will be able to:
 - Deploy an Ingress Gateway
-- Deploy Online Boutique sample apps
+- Deploy Online Boutique apps
 - Enforce Istio sidecar injection
 - Enforce `STRICT` mTLS in the Mesh
 - Enforce `AuthorizationPolicies`
@@ -11,21 +11,21 @@ With these demos you will be able to:
 As prerequisites, you need to have these tools installed:
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
-## Deploy Ingress Gateway
+## Deploy the Ingress Gateway
 
-Deploy an Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
+Deploy the Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply \
-    -f istio-ingress/namespace.yaml
+    -f root-sync/istio-ingress/namespace.yaml
 kubectl apply \
     -f istio-ingress/app-manifests.yaml
 kubectl apply \
     -f istio-ingress/gateway.yaml
 ```
 
-## Deploy sample apps
+## Deploy the Online Boutique apps
 
-Deploy the Online Boutique sample apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
+Deploy the Online Boutique apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply \
     -f onlineboutique/namespace.yaml

@@ -1,8 +1,7 @@
 # Demos with Config Sync
 
 With these demos you will be able to:
-- Sync the Ingress Gateway
-- Sync the Online Boutique sample apps
+- Sync the Ingress Gateway and the Online Boutique apps
 - Enforce Istio sidecar injection
 - Enforce `STRICT` mTLS in the Mesh
 - Enforce `AuthorizationPolicies`
@@ -11,42 +10,24 @@ With these demos you will be able to:
 As prerequisites, you need to have these tools installed:
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
 
-## Sync the Ingress Gateway
+## Sync the Ingress Gateway and the Online Boutique apps
 
-Sync the Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
+Sync the Istio Ingress Gateway and the Online Boutique apps in dedicated namespaces with the `istio-ingress istio-injection=enabled` label:
 ```bash
 cat << EOF | kubectl apply -f -
 apiVersion: configsync.gke.io/v1beta1
-kind: RepoSync
+kind: RootSync
 metadata:
-  name: repo-sync
-  namespace: istio-ingress
+  name: root-sync-apps
+  namespace: config-management-system
 spec:
   sourceFormat: unstructured
   git:
     repo: https://github.com/mathieu-benoit/istio-gatekeeper-demos
     revision: HEAD
     branch: main
-    dir: istio-ingress
+    dir: root-sync
     auth: none
-EOF
-```
-
-```bash
-cat << EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: repo-sync
-  namespace: istio-ingress
-subjects:
-- kind: ServiceAccount
-  name: ns-reconciler-istio-ingress
-  namespace: config-management-system
-roleRef:
-  kind: ClusterRole
-  name: edit
-  apiGroup: rbac.authorization.k8s.io
 EOF
 ```
 
