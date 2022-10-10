@@ -1,6 +1,6 @@
 # Demos with `kubectl apply` commands
 
-With these demos you will be able to:
+With this demo you will be able to:
 - Deploy an Ingress Gateway
 - Deploy Online Boutique apps
 - Enforce Istio sidecar injection

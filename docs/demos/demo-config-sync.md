@@ -1,11 +1,12 @@
 # Demos with Config Sync
 
-With these demos you will be able to:
+With this demo you will be able to:
 - Sync the Ingress Gateway and the Online Boutique apps
-- Enforce Istio sidecar injection
-- Enforce `STRICT` mTLS in the Mesh
-- Enforce `AuthorizationPolicies`
-- Clean up
+- Enforce policies
+  - Istio sidecar injection policy enforcement
+  - `STRICT` mTLS in the Mesh policy enforcement
+  - `AuthorizationPolicies` policy enforcement
+- Fix the policies violations
 
 As prerequisites, you need to have these tools installed:
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/#kubectl)
@@ -30,6 +31,7 @@ spec:
     auth: none
 EOF
 ```
+This `RootSync` will sync the manifests contained in the [`root-sync` folder](../../root-sync/). This folder contains the `RepoSyncs` in order to sync both Ingress Gateway and the Online Boutique apps. Each `RepoSync` has also it's own `RoleBinding` in order to sync Istio resources.
 
 Wait for the public IP address to be provisioned:
 ```bash
@@ -42,7 +44,7 @@ echo -n "http://" && \
 kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.loadBalancer.ingress[0].ip'
 ```
 
-## Enforce Policies
+## Enforce policies
 
 ```bash
 cat << EOF | kubectl apply -f -
@@ -61,6 +63,7 @@ spec:
     auth: none
 EOF
 ```
+This `RootSync` will sync the manifests contained in the [`policies` folder](../../policies/). This folder contains the `Constraints` and `ConstraintTemplates` as well as the Gatekeeper config ([`referential-constraints-config.yaml`](../../policies/gatekeeper-system/referential-constraints-config.yaml)) in order to evaluate the referential constraints.
 
 Verify that the `ConstraintTemplates` have been deployed successfully:
 ```bash
@@ -108,9 +111,9 @@ NAME                                                                       ENFOR
 peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               1
 ```
 
-In order to have `peerauthnmeshstrictmtls` and `authzpolicydefaultdeny` `Constraints` working, we needed to extend the default Gatekeeper config in order to take into account Istio resources.
+In order to have `peerauthnmeshstrictmtls` and `authzpolicydefaultdeny` `Constraints` working, we needed to extend the default Gatekeeper config to take into account the Istio resources.
 
-## Enforce Istio sidecar injection
+### Istio sidecar injection policy enforcement
 
 Here are the two policies previously deployed in order to guarantee that the wokloads are included in the Mesh:
 - `K8sRequiredLabels` - requires any `Namespace` in the mesh to contain the specific Istio sidecar proxy injection label: `istio-injection` with the value `enabled`
@@ -126,14 +129,14 @@ Output similar to:
 Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: [namespace-sidecar-injection-label] you must provide labels: {"istio-injection"}
 ```
 
-## Enforce `STRICT` mTLS in the Mesh
+### `STRICT` mTLS in the Mesh policy enforcement
 
 Here are the three policies previously deployed in order to guarantee `STRICT` mTLS in the Mesh:
 - `PeerAuthnMeshStrictMtls` - requires a default `STRICT` mTLS `PeerAuthentication` for the entire mesh in the `istio-system` namespace
 - `PeerAuthnStrictMtls` - prohibits disabling `STRICT` mTLS for all `PeerAuthentications`
 - `DestinationRuleTLSEnabled` - prohibits disabling `STRICT` mTLS for all hosts and host subsets in `DestinationRules`
 
-We could look at the violation detected for the  `PeerAuthnMeshStrictMtls` `Constraint` to get more details:
+Look at the violation detected for the  `PeerAuthnMeshStrictMtls` `Constraint` to get more details:
 ```bash
 kubectl get peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls \
     -ojsonpath='{.status.violations}' | jq
@@ -151,12 +154,12 @@ The output is similar to:
 ]
 ```
 
-## Enforce `AuthorizationPolicies`
+### `AuthorizationPolicies` policy enforcement
 
 Here is the policy previously deployed in order to guarantee that the default `AuthorizationPolicy` in the Mesh is denying all request:
 - `AuthzPolicyDefaultDeny` - requires a default `deny` `AuthorizationPolicy` for the entire mesh in the `istio-system` namespace
 
-We could look at the violation detected for the `AuthzPolicyDefaultDeny` `Constraint` to get more details:
+Look at the violation detected for the `AuthzPolicyDefaultDeny` `Constraint` to get more details:
 ```bash
 kubectl get authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies \
     -ojsonpath='{.status.violations}' | jq
@@ -176,7 +179,7 @@ The output is similar to:
 
 ## Fix the policies violations
 
-We could fix these violations by deploying the default deny-all `AuthorizationPolicy` and the default `STRICT` `PeerAuthentication` in the `istio-system` namespace:
+Fix these violations by syncing the default deny-all `AuthorizationPolicy` and the default `STRICT` `PeerAuthentication` in the `istio-system` namespace:
 ```bash
 cat << EOF | kubectl apply -f -
 apiVersion: configsync.gke.io/v1beta1
@@ -194,6 +197,7 @@ spec:
     auth: none
 EOF
 ```
+This `RootSync` will sync the manifests contained in the [`istio-system` folder](../../istio-system/).
 
 After a few minutes, verify that the `Constraints` don't have any remaining violations:
 ```bash
