@@ -6,7 +6,8 @@ The demos will work with the two following setups, choose one:
 - [Istio and Gatekeeper on GKE](docs/setups/setup-istio-gatekeeper-gke.md)
 - [Google Service Mesh and Policy Controller on GKE](docs/setups/setup-asm-poco-gke.md)
 
-There are two demos available:
+There are three demos available:
 1. [Deploy manifests with `kubectl apply` commands](docs/demos/demo-kubectl-apply.md)
+1. [Sync manifests with Config Sync](docs/demos/demo-config-sync.md)
 1. [Shift enforcement left](docs/demos/demo-shift-enforcement-left.md)
 
