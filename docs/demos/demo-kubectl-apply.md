@@ -13,7 +13,7 @@ As prerequisites, you need to have these tools installed:
 
 ## Deploy the Ingress Gateway
 
-Deploy the Istio Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
+Deploy the Ingress Gateway in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply \
     -f root-sync/istio-ingress/namespace.yaml
@@ -28,7 +28,7 @@ kubectl apply \
 Deploy the Online Boutique apps in a dedicated namespace with the `istio-ingress istio-injection=enabled` label:
 ```bash
 kubectl apply \
-    -f onlineboutique/namespace.yaml
+    -f root-sync/onlineboutique/namespace.yaml
 kubectl apply \
     -f onlineboutique/apps-manifests.yaml
 kubectl apply \
@@ -46,17 +46,12 @@ echo -n "http://" && \
 kubectl get svc istio-ingressgateway -n istio-ingress -o json | jq -r '.status.loadBalancer.ingress[0].ip'
 ```
 
-Check the number of pods and sidecar proxies (`2/2`) running in your mesh:
-```bash
-kubectl get pods -A -l istio.io/rev=asm-managed-rapid
-```
-
 ## Enforce Istio sidecar injection
 
 - `K8sRequiredLabels` - requires any `Namespace` in the mesh to contain the specific Istio sidecar proxy injection label: `istio-injection` with the value `enabled`
 - `SidecarInjectionAnnotation` - prohibits any `Pod` in the mesh to by-pass the Istio proxy sidecar injection
 
-Let's deploy these two `constraints` and `constrainttemplates`:
+Let's deploy these `Constraints` and `ConstraintTemplates`:
 ```bash
 kubectl apply \
     -f policies/constrainttemplates/sidecar-injection
@@ -64,7 +59,7 @@ kubectl apply \
     -f policies/constraints/sidecar-injection
 ```
 
-Verify that the two `constrainttemplates` has been deployed successfully:
+Verify that the `ConstraintTemplates` have been deployed successfully:
 ```bash
 kubectl get constrainttemplates
 ```
@@ -76,7 +71,7 @@ k8srequiredlabels            47s
 sidecarinjectionannotation   47s
 ```
 
-Verify that the two `constraints` has been deployed successfully:
+Verify that the `Constraints` have been deployed successfully:
 ```bash
 kubectl get constraints
 ```
@@ -112,7 +107,7 @@ kubectl apply \
     -f policies/gatekeeper-system/referential-constraints-config.yaml
 ```
 
-Let's deploy these two `constraints` and `constrainttemplates`:
+Let's deploy these `Constraints` and `ConstraintTemplates`:
 ```bash
 kubectl apply \
     -f policies/constrainttemplates/strict-mtls
@@ -120,7 +115,7 @@ kubectl apply \
     -f policies/constraints/strict-mtls
 ```
 
-Verify that the two `constrainttemplates` has been deployed successfully:
+Verify that the `ConstraintTemplates` have been deployed successfully:
 ```bash
 kubectl get constrainttemplates
 ```
@@ -135,7 +130,7 @@ peerauthnstrictmtls          17s
 sidecarinjectionannotation   56m
 ```
 
-Verify that the two `constraints` has been deployed successfully:
+Verify that the `Constraints` have been deployed successfully:
 ```bash
 kubectl get constraints
 ```
@@ -209,7 +204,7 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 
 - `AuthzPolicyDefaultDeny` - requires a default `deny` `AuthorizationPolicy` for the entire mesh in the `istio-system` namespace
 
-Let's deploy these two `constraints` and `constrainttemplates`:
+Let's deploy these `Constraints` and `ConstraintTemplates`:
 ```bash
 kubectl apply \
     -f policies/constrainttemplates/authorization-policies
@@ -217,7 +212,7 @@ kubectl apply \
     -f policies/constraints/authorization-policies
 ```
 
-Verify that the two `constrainttemplates` has been deployed successfully:
+Verify that the `ConstraintTemplates` have been deployed successfully:
 ```bash
 kubectl get constrainttemplates
 ```
@@ -233,7 +228,7 @@ peerauthnstrictmtls          13h
 sidecarinjectionannotation   13h
 ```
 
-Verify that the two `constraints` has been deployed successfully:
+Verify that the `Constraints` have been deployed successfully:
 ```bash
 kubectl get constraints
 ```
@@ -318,10 +313,13 @@ kubectl apply \
     -f onlineboutique/authorizationpolicies.yaml 
 ```
 
-Visit again the Online Boutique website from your browser, you should now see it working successfully now.
+Visit again the Online Boutique website from your browser, you should now see it working successfully.
 
 
 Congrats! You have secured your cluster, your mesh and your Online Boutique website with `STRICT` mTLS and fine granular `AuthorizationPolicies`, while enforcing this secure setup with associated policies and `Constraints`!
+
+If you are using Google Service Mesh, you could see these security features here:
+![ASM security view](images/asm-security.png)
 
 ## Clean up
 

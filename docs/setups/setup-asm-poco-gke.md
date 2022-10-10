@@ -57,7 +57,7 @@ applySpecVersion: 1
 spec:
   policyController:
     enabled: true
-    templateLibraryInstalled: true
+    templateLibraryInstalled: false
     referentialRulesEnabled: true
 EOF
 gcloud beta container fleet config-management apply \
@@ -75,7 +75,7 @@ spec:
     enabled: true
   policyController:
     enabled: true
-    templateLibraryInstalled: true
+    templateLibraryInstalled: false
     referentialRulesEnabled: true
 EOF
 gcloud beta container fleet config-management apply \
