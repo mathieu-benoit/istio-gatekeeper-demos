@@ -1,0 +1,13 @@
+apiVersion: configsync.gke.io/v1beta1
+kind: RepoSync
+metadata:
+  name: istio-ingress
+  namespace: istio-ingress
+spec:
+  sourceFormat: unstructured
+  git:
+    repo: https://github.com/mathieu-benoit/istio-gatekeeper-demos
+    revision: HEAD
+    branch: main
+    dir: istio-ingress
+    auth: none

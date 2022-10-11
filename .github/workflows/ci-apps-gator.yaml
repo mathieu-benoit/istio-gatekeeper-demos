@@ -25,8 +25,6 @@ jobs:
           tar xvf gator-v${GATOR_VERSION}-linux-amd64.tar.gz && rm gator-v${GATOR_VERSION}-linux-amd64.tar.gz
         env:
           GATOR_VERSION: 3.9.0
-      - name: gator verify
-        run: ./gator verify test/suite.yaml
       - name: gator test
         id: gator
         run: |
@@ -41,5 +39,5 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             cat gator-error.json | jq -r '.[]? | "➡️ \(.constraint.metadata.name) - \(.msg)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            rm tmp/results.yaml
+            rm gator-error.json
           fi

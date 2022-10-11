@@ -10,6 +10,10 @@ spec:
       - ""
       kinds:
       - Service
+    excludedNamespaces:
+    - kube-system
+    - config-management-monitoring
+    - gke-connect
   parameters:
     prefixes:
     - http

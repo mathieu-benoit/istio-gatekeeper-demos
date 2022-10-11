@@ -2,8 +2,8 @@ kind: Suite
 apiVersion: test.gatekeeper.sh/v1alpha1
 tests:
   - name: allowed-service-port-name
-    template: ../constrainttemplates/allowed-service-port-name.yaml
-    constraint: ../constraints/allowed-service-port-name.yaml
+    template: ../policies/constrainttemplates/allowed-service-port-name.yaml
+    constraint: ../policies/constraints/allowed-service-port-name.yaml
     cases:
       - name: example-allowed
         object: allowed-service-port-name/example-allowed.yaml
@@ -14,8 +14,8 @@ tests:
         assertions:
           - violations: yes
   - name: sidecar-injection-annotation
-    template: ../constrainttemplates/sidecar-injection/sidecar-injection-annotation.yaml
-    constraint: ../constraints/sidecar-injection/sidecar-injection-annotation.yaml
+    template: ../policies/constrainttemplates/sidecar-injection/sidecar-injection-annotation.yaml
+    constraint: ../policies/constraints/sidecar-injection/sidecar-injection-annotation.yaml
     cases:
       - name: example-allowed
         object: sidecar-injection-annotation/example-allowed.yaml
