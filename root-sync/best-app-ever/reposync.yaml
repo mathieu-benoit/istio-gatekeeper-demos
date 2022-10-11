@@ -1,0 +1,13 @@
+apiVersion: configsync.gke.io/v1beta1
+kind: RepoSync
+metadata:
+  name: best-app-ever
+  namespace: best-app-ever
+spec:
+  sourceFormat: unstructured
+  git:
+    repo: https://github.com/mathieu-benoit/istio-gatekeeper-demos
+    revision: HEAD
+    branch: main
+    dir: best-app-ever
+    auth: none
