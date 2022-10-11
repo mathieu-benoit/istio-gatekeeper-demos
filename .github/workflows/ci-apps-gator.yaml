@@ -39,5 +39,5 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             cat gator-error.json | jq -r '.[]? | "➡️ \(.constraint.metadata.name) - \(.msg)"' | sed 's/<//g;s/>//g' >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            rm tmp/results.yaml
+            rm gator-error.json
           fi
