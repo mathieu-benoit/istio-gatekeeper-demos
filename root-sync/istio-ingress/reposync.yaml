@@ -1,7 +1,7 @@
 apiVersion: configsync.gke.io/v1beta1
 kind: RepoSync
 metadata:
-  name: istio-ingress
+  name: repo-sync
   namespace: istio-ingress
 spec:
   sourceFormat: unstructured
