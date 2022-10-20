@@ -2,7 +2,7 @@
 
 As prerequisites, you need to have these tools installed:
 - [`gcloud`](https://cloud.google.com/sdk/docs/install)
-- [`istioctl`](https://istio.io/latest/docs/setup/install/istioctl/)
+- [`istioctl`](https://istio.io/latest/docs/setup/getting-started/#download)
 - [`helm`](https://helm.sh/docs/intro/install/)
 
 ## Set current project
@@ -50,4 +50,10 @@ helm install gatekeeper/gatekeeper \
 
 ## (Optional) Install Config Sync
 
-_Coming, stay tuned!_
+Install Config Sync in your cluster:
+```bash
+CONFIG_SYNC_VERSION=1.13.0
+kubectl apply \
+    -f https://github.com/GoogleContainerTools/kpt-config-sync/releases/download/v${CONFIG_SYNC_VERSION}/config-sync-manifest.yaml \
+    --wait
+```
