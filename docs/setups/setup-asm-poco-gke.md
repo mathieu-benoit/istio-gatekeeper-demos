@@ -17,7 +17,7 @@ PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNum
 Create a GKE cluster:
 ```bash
 CLUSTER_NAME=asm-poco-demo
-CLUSTER_ZONE=us-east4-a
+CLUSTER_ZONE=northamerica-northeast1
 
 gcloud services enable container.googleapis.com
 

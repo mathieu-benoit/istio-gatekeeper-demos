@@ -10,7 +10,6 @@ As prerequisites, you need to have these tools installed:
 ```
 PROJECT_ID=FIXME
 gcloud config set project ${PROJECT_ID}
-PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNumber)')
 ```
 
 ## Create Kubernetes cluster
@@ -18,11 +17,14 @@ PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNum
 Create a GKE cluster:
 ```bash
 CLUSTER_NAME=istio-gatekeeper-demo
-CLUSTER_ZONE=us-east4-a
+CLUSTER_ZONE=northamerica-northeast1
+
+gcloud services enable container.googleapis.com
+
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
     --machine-type e2-standard-4 \
-    --num-nodes 5
+    --num-nodes 4
 ```
 
 ## Install Istio
