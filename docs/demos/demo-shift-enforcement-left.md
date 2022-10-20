@@ -10,8 +10,8 @@ git checkout new-test-app
 ```
 
 As prerequisites, you need to have these tools installed:
-- [`kpt`]()
-- [`gator`]()
+- [`kpt`](https://kpt.dev/installation/)
+- [`gator`](https://open-policy-agent.github.io/gatekeeper/website/docs/gator/#installation)
 
 ## With `kpt`
 ```bash
