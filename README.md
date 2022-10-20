@@ -11,3 +11,4 @@ There are three demos available:
 1. [Sync manifests with Config Sync](docs/demos/demo-config-sync.md)
 1. [Shift enforcement left](docs/demos/demo-shift-enforcement-left.md)
 
+![Personas and Workflow overview](./docs/images/personas-workflow.png)

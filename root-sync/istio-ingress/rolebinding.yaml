@@ -5,7 +5,7 @@ metadata:
   namespace: istio-ingress
 subjects:
 - kind: ServiceAccount
-  name: ns-reconciler-istio-ingress-istio-ingress-13
+  name: ns-reconciler-istio-ingress
   namespace: config-management-system
 roleRef:
   kind: ClusterRole

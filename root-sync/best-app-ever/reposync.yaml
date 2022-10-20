@@ -1,7 +1,7 @@
 apiVersion: configsync.gke.io/v1beta1
 kind: RepoSync
 metadata:
-  name: best-app-ever
+  name: repo-sync
   namespace: best-app-ever
 spec:
   sourceFormat: unstructured
