@@ -234,7 +234,7 @@ Visit the Online Boutique website from your browser, you should still see it wor
 Congrats! You have secured your cluster, your mesh and your Online Boutique website with `STRICT` mTLS and fine granular `AuthorizationPolicies`, while enforcing this secure setup with associated policies and `Constraints`!
 
 If you are using Google Service Mesh, you could see these security features here:
-![ASM security view](images/asm-security.png)
+![ASM security view](../images/asm-security.png)
 
 Here is the summary of the `RootSyncs` and `RepoSyncs` you have configured with Config Sync:
-![Config Sync status](images/config-sync-status.png)
+![Config Sync status](../images/config-sync-status.png)

@@ -22,6 +22,6 @@ jobs:
           curl -OL https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz
           tar xvf gator-v${GATOR_VERSION}-linux-amd64.tar.gz && rm gator-v${GATOR_VERSION}-linux-amd64.tar.gz
         env:
-          GATOR_VERSION: 3.9.0
+          GATOR_VERSION: 3.10.0
       - name: gator verify
         run: ./gator verify test/suite.yaml
