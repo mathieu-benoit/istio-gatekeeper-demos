@@ -21,7 +21,7 @@ CLUSTER_ZONE=northamerica-northeast1
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
     --machine-type e2-standard-4 \
-    --num-nodes 5
+    --num-nodes 4
 ```
 
 ## Install Istio
