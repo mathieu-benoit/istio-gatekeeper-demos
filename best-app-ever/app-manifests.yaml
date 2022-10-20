@@ -43,7 +43,7 @@ spec:
         - name: my-chart
           securityContext:
             {}
-          image: "nginx:1.16.0"
+          image: "nginx:alpine"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
