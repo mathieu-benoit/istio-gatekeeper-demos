@@ -10,7 +10,6 @@ As prerequisites, you need to have these tools installed:
 ```
 PROJECT_ID=FIXME
 gcloud config set project ${PROJECT_ID}
-PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNumber)')
 ```
 
 ## Create Kubernetes cluster
