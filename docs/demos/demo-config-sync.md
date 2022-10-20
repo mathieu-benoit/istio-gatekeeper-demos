@@ -33,6 +33,37 @@ EOF
 ```
 This `RootSync` will sync the manifests contained in the [`root-sync` folder](../../root-sync/). This folder contains the `RepoSyncs` in order to sync both Ingress Gateway and the Online Boutique apps. Each `RepoSync` has also it's own `RoleBinding` in order to sync Istio resources.
 
+Wait for the `RootSync` to be synced:
+```bash
+kubectl get rootsync -A
+```
+```output
+NAMESPACE                  NAME             RENDERINGCOMMIT                            RENDERINGERRORCOUNT   SOURCECOMMIT                               SOURCEERRORCOUNT   SYNCCOMMIT                                 SYNCERRORCOUNT
+config-management-system   root-sync-apps   82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73
+```
+
+Wait for the 3 `RepoSyncs` to be synced:
+```bash
+kubectl get reposync -A
+```
+```output
+NAMESPACE        NAME        RENDERINGCOMMIT                            RENDERINGERRORCOUNT   SOURCECOMMIT                               SOURCEERRORCOUNT   SYNCCOMMIT                                 SYNCERRORCOUNT
+best-app-ever    repo-sync   82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73   
+istio-ingress    repo-sync   82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73   
+onlineboutique   repo-sync   82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73
+```
+
+Check that the Istio sidecar proxies have been injected and successfully deployed:
+```bash
+istioctl version
+```
+```output
+client version: 1.15.2
+control plane version: 1.15.2
+data plane version: 1.15.2 (13 proxies)
+```
+_Note: `13 proxies` = 12 from `onlineboutique` + 1 from `istio-ingress`._
+
 Wait for the public IP address to be provisioned:
 ```bash
 until kubectl get svc istio-ingressgateway -n istio-ingress -o jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done
@@ -65,6 +96,16 @@ EOF
 ```
 This `RootSync` will sync the manifests contained in the [`policies` folder](../../policies/). This folder contains the `Constraints` and `ConstraintTemplates` as well as the Gatekeeper config ([`referential-constraints-config.yaml`](../../policies/gatekeeper-system/referential-constraints-config.yaml)) in order to evaluate the referential constraints.
 
+Wait for the `RootSync` to be synced:
+```bash
+kubectl get rootsync -A
+```
+```output
+NAMESPACE                  NAME                 RENDERINGCOMMIT                            RENDERINGERRORCOUNT   SOURCECOMMIT                               SOURCEERRORCOUNT   SYNCCOMMIT                                 SYNCERRORCOUNT
+config-management-system   root-sync-apps       82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73   
+config-management-system   root-sync-policies   82b96a9a1a70646c3251ec8edbe5274a4ab14f73                         82b96a9a1a70646c3251ec8edbe5274a4ab14f73                      82b96a9a1a70646c3251ec8edbe5274a4ab14f73
+```
+
 Verify that the `ConstraintTemplates` have been deployed successfully:
 ```bash
 kubectl get constrainttemplates
@@ -73,13 +114,13 @@ kubectl get constrainttemplates
 Output similar to:
 ```output
 NAME                         AGE
-allowedserviceportname       47s
-authzpolicydefaultdeny       47s
-destinationruletlsenabled    47s
-k8srequiredlabels            47s
-peerauthnmeshstrictmtls      47s
-peerauthnstrictmtls          47s
-sidecarinjectionannotation   47s
+allowedserviceportname       115s
+authzpolicydefaultdeny       115s
+destinationruletlsenabled    115s
+k8srequiredlabels            115s
+peerauthnmeshstrictmtls      115s
+peerauthnstrictmtls          115s
+sidecarinjectionannotation   115s
 ```
 
 Verify that the `Constraints` has been deployed successfully:
@@ -89,17 +130,8 @@ kubectl get constraints
 
 Output similar to:
 ```output
-NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
-
 NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
-
-NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
-
-NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               1
 
 NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
@@ -107,11 +139,20 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 NAME                                                                    ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 allowedserviceportname.constraints.gatekeeper.sh/port-name-constraint   deny                 0
 
+NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               1
+
 NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               1
+
+NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
 ```
 
-In order to have `peerauthnmeshstrictmtls` and `authzpolicydefaultdeny` `Constraints` working, we needed to extend the default Gatekeeper config to take into account the Istio resources.
+In order to have `peerauthnmeshstrictmtls` and `authzpolicydefaultdeny` `Constraints` working, we needed to extend the default Gatekeeper config to take into account the Istio resources. See the [`referential-constraints-config.yaml`](../../policies/gatekeeper-system/referential-constraints-config.yaml) file already synced in your cluster, for more details.
 
 ### Istio sidecar injection policy enforcement
 
@@ -199,6 +240,17 @@ EOF
 ```
 This `RootSync` will sync the manifests contained in the [`istio-system` folder](../../istio-system/).
 
+Wait for the `RootSync` to be synced:
+```bash
+kubectl get rootsync -A
+```
+```output
+NAMESPACE                  NAME                     RENDERINGCOMMIT                            RENDERINGERRORCOUNT   SOURCECOMMIT                               SOURCEERRORCOUNT   SYNCCOMMIT                                 SYNCERRORCOUNT
+config-management-system   root-sync-apps           cd74a14de51de93046b8040c217c9bd4ebafc14c                         cd74a14de51de93046b8040c217c9bd4ebafc14c                      cd74a14de51de93046b8040c217c9bd4ebafc14c   
+config-management-system   root-sync-istio-system   cd74a14de51de93046b8040c217c9bd4ebafc14c                         cd74a14de51de93046b8040c217c9bd4ebafc14c                      cd74a14de51de93046b8040c217c9bd4ebafc14c   
+config-management-system   root-sync-policies       cd74a14de51de93046b8040c217c9bd4ebafc14c                         cd74a14de51de93046b8040c217c9bd4ebafc14c                      cd74a14de51de93046b8040c217c9bd4ebafc14c
+```
+
 After a few minutes, verify that the `Constraints` don't have any remaining violations:
 ```bash
 kubectl get constraints
@@ -206,8 +258,8 @@ kubectl get constraints
 
 The output is similar to:
 ```output
-NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               0
+NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
 
 NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   deny                 0
@@ -215,17 +267,17 @@ k8srequiredlabels.constraints.gatekeeper.sh/namespace-sidecar-injection-label   
 NAME                                                                    ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 allowedserviceportname.constraints.gatekeeper.sh/port-name-constraint   deny                 0
 
+NAME                                                                                   ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+authzpolicydefaultdeny.constraints.gatekeeper.sh/default-deny-authorization-policies   dryrun               0
+
 NAME                                                                       ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 peerauthnmeshstrictmtls.constraints.gatekeeper.sh/mesh-level-strict-mtls   dryrun               0
 
-NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
-
-NAME                                                                                ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
-sidecarinjectionannotation.constraints.gatekeeper.sh/sidecar-injection-annotation   deny                 0
-
 NAME                                                                               ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
 destinationruletlsenabled.constraints.gatekeeper.sh/destination-rule-tls-enabled   deny                 0
+
+NAME                                                                            ENFORCEMENT-ACTION   TOTAL-VIOLATIONS
+peerauthnstrictmtls.constraints.gatekeeper.sh/peer-authentication-strict-mtls   deny                 0
 ```
 
 Visit the Online Boutique website from your browser, you should still see it working successfully.
