@@ -18,6 +18,9 @@ Create a GKE cluster:
 ```bash
 CLUSTER_NAME=istio-gatekeeper-demo
 CLUSTER_ZONE=northamerica-northeast1
+
+gcloud services enable container.googleapis.com
+
 gcloud container clusters create ${CLUSTER_NAME} \
     --zone ${CLUSTER_ZONE} \
     --machine-type e2-standard-4 \
