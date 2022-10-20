@@ -318,7 +318,7 @@ Visit again the Online Boutique website from your browser, you should now see it
 
 Congrats! You have secured your cluster, your mesh and your Online Boutique website with `STRICT` mTLS and fine granular `AuthorizationPolicies`, while enforcing this secure setup with associated policies and `Constraints`!
 
-If you are using Google Service Mesh, you could see these security features here:
+If you are using [Google Service Mesh](../setups/setup-asm-poco-gke.md), you could see these security features here:
 ![ASM security view](images/asm-security.png)
 
 ## Clean up
