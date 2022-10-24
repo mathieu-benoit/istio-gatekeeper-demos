@@ -13,6 +13,7 @@ spec:
     excludedNamespaces:
     - kube-system
     - config-management-monitoring
+    - config-management-system
     - gke-connect
   parameters:
     prefixes:
