@@ -29,7 +29,7 @@ jobs:
         id: gator
         run: |
           rm -rf test
-          rm .github/workflows/*
+          rm -rf .github
           ./gator test -f . -o json > gator-error.json
       - name: write errors in summary
         if: ${{ failure() && steps.gator.outcome == 'failure' }}
