@@ -17,7 +17,7 @@ PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='get(projectNum
 Create a GKE cluster:
 ```bash
 CLUSTER_NAME=asm-poco-demo
-CLUSTER_ZONE=us-east4-a
+CLUSTER_ZONE=northamerica-northeast1
 
 gcloud services enable container.googleapis.com
 
@@ -81,26 +81,4 @@ EOF
 gcloud beta container fleet config-management apply \
     --membership ${CLUSTER_NAME} \
     --config acm-config.yaml
-```
-
-Since the `RepoSync` reconcilers need additional permissions to create Istio resources, the following `ClusterRole` needs to be applied to the cluster:
-```bash
-cat << EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    rbac.authorization.k8s.io/aggregate-to-edit: "true"
-  name: custom:aggregate-to-edit:istio
-rules:
-- apiGroups:
-  - "networking.istio.io"
-  - "security.istio.io"
-  resources:
-  - "virtualservices"
-  - "authorizationpolicies"
-  - "gateways"
-  verbs:
-  - "*"
-EOF
 ```
