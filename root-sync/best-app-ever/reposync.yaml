@@ -8,6 +8,6 @@ spec:
   git:
     repo: https://github.com/mathieu-benoit/istio-gatekeeper-demos
     revision: HEAD
-    branch: new-test-app-ready
+    branch: main
     dir: best-app-ever
     auth: none
