@@ -1,6 +1,8 @@
 # Istio + Gatekeeper demos
 
-Associated [Istio + Gatekeeper](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/) talk delivered at IstioCon 2022.
+Demos delivered at:
+- [IstioCon 2022](https://events.istio.io/istiocon-2022/sessions/gatekeeper-istio/)
+- [GitOpsCon 2022](https://sched.co/1AR95)
 
 The demos will work with the two following setups, choose one:
 - [Istio and Gatekeeper on GKE](docs/setups/setup-istio-gatekeeper-gke.md)
