@@ -59,6 +59,7 @@ spec:
     enabled: true
     templateLibraryInstalled: false
     referentialRulesEnabled: true
+    auditIntervalSeconds: 5
 EOF
 gcloud beta container fleet config-management apply \
     --membership ${CLUSTER_NAME} \
