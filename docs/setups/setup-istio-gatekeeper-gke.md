@@ -52,8 +52,6 @@ helm install gatekeeper/gatekeeper \
 
 Install Config Sync in your cluster:
 ```bash
-CONFIG_SYNC_VERSION=1.13.0
-kubectl apply \
-    -f https://github.com/GoogleContainerTools/kpt-config-sync/releases/download/v${CONFIG_SYNC_VERSION}/config-sync-manifest.yaml \
-    --wait
+CONFIG_SYNC_VERSION=$(curl -s https://api.github.com/repos/GoogleContainerTools/kpt-config-sync/releases/latest | jq -r .tag_name)
+kubectl apply -f https://github.com/GoogleContainerTools/kpt-config-sync/releases/download/${CONFIG_SYNC_VERSION}/config-sync-manifest.yaml
 ```
