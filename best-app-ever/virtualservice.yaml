@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: best-app-ever
+  namespace: best-app-ever
+spec:
+  hosts:
+    - "*"
+  gateways:
+  - istio-ingress/istio-ingressgateway
+  http:
+  - route:
+    - destination:
+        host: best-app-ever
+        port:
+          number: 80
