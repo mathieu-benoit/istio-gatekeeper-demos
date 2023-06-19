@@ -240,22 +240,18 @@ spec:
           value: "1"
         - name: DISABLE_TRACING
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/adservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/adservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:9555
+          grpc:
+            port: 9555
           initialDelaySeconds: 20
           periodSeconds: 15
         name: server
         ports:
         - containerPort: 9555
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:9555
+          grpc:
+            port: 9555
           initialDelaySeconds: 20
           periodSeconds: 15
         resources:
@@ -298,24 +294,18 @@ spec:
       - env:
         - name: REDIS_ADDR
           value: redis-cart:6379
-        image: gcr.io/google-samples/microservices-demo/cartservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/cartservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:7070
-            - -rpc-timeout=5s
+          grpc:
+            port: 7070
           initialDelaySeconds: 15
           periodSeconds: 10
         name: server
         ports:
         - containerPort: 7070
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:7070
-            - -rpc-timeout=5s
+          grpc:
+            port: 7070
           initialDelaySeconds: 15
         resources:
           limits:
@@ -375,20 +365,16 @@ spec:
           value: "1"
         - name: DISABLE_PROFILER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/checkoutservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/checkoutservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:5050
+          grpc:
+            port: 5050
         name: server
         ports:
         - containerPort: 5050
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:5050
+          grpc:
+            port: 5050
         resources:
           limits:
             cpu: 200m
@@ -434,21 +420,17 @@ spec:
           value: "1"
         - name: DISABLE_DEBUGGER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/currencyservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/currencyservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:7000
+          grpc:
+            port: 7000
         name: server
         ports:
         - containerPort: 7000
           name: grpc
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:7000
+          grpc:
+            port: 7000
         resources:
           limits:
             cpu: 200m
@@ -493,21 +475,17 @@ spec:
           value: "1"
         - name: DISABLE_PROFILER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/emailservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/emailservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:8080
+          grpc:
+            port: 8080
           periodSeconds: 5
         name: server
         ports:
         - containerPort: 8080
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:8080
+          grpc:
+            port: 8080
           periodSeconds: 5
         resources:
           limits:
@@ -569,7 +547,7 @@ spec:
           value: "1"
         - name: DISABLE_PROFILER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/frontend:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/frontend:v0.8.0
         livenessProbe:
           httpGet:
             httpHeaders:
@@ -633,7 +611,7 @@ spec:
           value: frontend:80
         - name: USERS
           value: "10"
-        image: gcr.io/google-samples/microservices-demo/loadgenerator:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/loadgenerator:v0.8.0
         name: main
         resources:
           limits:
@@ -705,20 +683,16 @@ spec:
           value: "1"
         - name: DISABLE_DEBUGGER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:50051
+          grpc:
+            port: 50051
         name: server
         ports:
         - containerPort: 50051
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:50051
+          grpc:
+            port: 50051
         resources:
           limits:
             cpu: 200m
@@ -765,20 +739,16 @@ spec:
           value: "1"
         - name: DISABLE_PROFILER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/productcatalogservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:3550
+          grpc:
+            port: 3550
         name: server
         ports:
         - containerPort: 3550
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:3550
+          grpc:
+            port: 3550
         resources:
           limits:
             cpu: 200m
@@ -827,21 +797,17 @@ spec:
           value: "1"
         - name: DISABLE_DEBUGGER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/recommendationservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/recommendationservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:8080
+          grpc:
+            port: 8080
           periodSeconds: 5
         name: server
         ports:
         - containerPort: 8080
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:8080
+          grpc:
+            port: 8080
           periodSeconds: 5
         resources:
           limits:
@@ -942,20 +908,16 @@ spec:
           value: "1"
         - name: DISABLE_PROFILER
           value: "1"
-        image: gcr.io/google-samples/microservices-demo/shippingservice:v0.7.0
+        image: gcr.io/google-samples/microservices-demo/shippingservice:v0.8.0
         livenessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:50051
+          grpc:
+            port: 50051
         name: server
         ports:
         - containerPort: 50051
         readinessProbe:
-          exec:
-            command:
-            - /bin/grpc_health_probe
-            - -addr=:50051
+          grpc:
+            port: 50051
           periodSeconds: 5
         resources:
           limits:
